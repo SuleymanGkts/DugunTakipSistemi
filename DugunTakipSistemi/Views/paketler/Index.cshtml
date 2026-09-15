@@ -1,0 +1,133 @@
+﻿@model List<DugunTakipSistemi.Models.Paket>
+@{
+    ViewData["Title"] = "Hizmet Paketleri";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold text-dark"><i class="fa-solid fa-box-open me-2"></i>Hizmet Paketleri</h3>
+    <!-- Yeni Paket Ekle Butonu -->
+    <button class="btn btn-primary fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#yeniPaketModal">
+        <i class="fa-solid fa-plus me-1"></i> Yeni Paket Ekle
+    </button>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover table-borderless align-middle mb-0">
+            <thead class="table-light border-bottom">
+                <tr>
+                    <th class="py-3 px-4">Paket Adı</th>
+                    <th class="py-3">Fiyat (₺)</th>
+                    <th class="py-3 text-end px-4">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var p in Model)
+                    {
+                        <tr class="border-bottom">
+                            <td class="px-4 fw-bold text-dark">@p.PaketAdi</td>
+                            <td class="text-success fw-bold">@p.Fiyat.ToString("N2") ₺</td>
+                            <td class="text-end px-4">
+                                <!-- DÜZENLE BUTONU (Verileri Modala Aktarır) -->
+                                <button class="btn btn-sm btn-outline-secondary me-1"
+                                        onclick="paketiDuzenle(@p.Id, '@p.PaketAdi', @p.Fiyat)"
+                                        title="Düzenle">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <!-- SİL BUTONU -->
+                                <a href="/Paketler/Sil/@p.Id" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bu paketi silmek istediğinize emin misiniz?');" title="Sil">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" class="text-center py-5 text-muted fst-italic">
+                            <i class="fa-solid fa-folder-open fs-1 mb-3 d-block text-black-50"></i>
+                            Henüz sisteme kayıtlı bir paket bulunmuyor.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- YENİ PAKET EKLEME MODALI -->
+<div class="modal fade" id="yeniPaketModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title"><i class="fa-solid fa-plus me-2"></i>Yeni Paket Oluştur</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/Paketler/Ekle" method="post">
+                <div class="modal-body bg-light">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Paket Adı</label>
+                        <input type="text" name="paketAdi" class="form-control" placeholder="Örn: VIP Düğün Paketi" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Paket Fiyatı (₺)</label>
+                        <input type="number" name="paketFiyati" class="form-control" placeholder="Örn: 25000" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-success"><i class="fa-solid fa-check me-2"></i>Paketi Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- PAKET DÜZENLEME MODALI -->
+<div class="modal fade" id="duzenlePaketModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title"><i class="fa-solid fa-pen me-2"></i>Paket Bilgilerini Güncelle</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/Paketler/Guncelle" method="post">
+                <div class="modal-body bg-light">
+                    <!-- Gizli ID Alanı -->
+                    <input type="hidden" id="duzenleId" name="id" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Paket Adı</label>
+                        <input type="text" id="duzenleAdi" name="paketAdi" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Paket Fiyatı (₺)</label>
+                        <input type="number" id="duzenleFiyati" name="paketFiyati" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check me-2"></i>Değişiklikleri Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Kalem butonuna basıldığında verileri düzenleme modalına dolduran fonksiyon
+        function paketiDuzenle(id, adi, fiyat) {
+            document.getElementById('duzenleId').value = id;
+            document.getElementById('duzenleAdi').value = adi;
+            document.getElementById('duzenleFiyati').value = fiyat;
+
+            // Modalı ekranda göster
+            var myModal = new bootstrap.Modal(document.getElementById('duzenlePaketModal'));
+            myModal.show();
+        }
+    </script>
+}

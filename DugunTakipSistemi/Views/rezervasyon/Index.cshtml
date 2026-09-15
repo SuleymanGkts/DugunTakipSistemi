@@ -1,46 +1,100 @@
-﻿@{
+﻿@model List<DugunTakipSistemi.Models.Paket>
+@{
     ViewData["Title"] = "Takvim ve Rezervasyonlar";
 }
 
-<!-- FullCalendar CSS -->
+<!-- ========================================== -->
+<!-- 1. TAKVİM TASARIMI (CSS)                   -->
+<!-- ========================================== -->
+<style>
+    #calendar {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .fc-theme-standard td, .fc-theme-standard th, .fc-theme-standard .fc-scrollgrid {
+        border-color: #f1f3f5 !important;
+    }
+
+    .fc-col-header-cell {
+        background-color: #f8f9fa;
+        padding: 12px 0 !important;
+        color: #495057;
+        font-weight: 600;
+        border-bottom: 2px solid #e9ecef !important;
+    }
+
+    .fc-daygrid-day-number {
+        color: #6c757d;
+        font-weight: 500;
+        text-decoration: none !important;
+        padding: 8px 12px !important;
+    }
+
+    .fc-day-today {
+        background-color: #f0f7ff !important;
+    }
+
+    .ozel-etkinlik-kutu {
+        border-radius: 6px;
+        padding: 6px 10px;
+        color: #fff;
+        margin-bottom: 4px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+        border-left: 4px solid rgba(255,255,255,0.7);
+        font-size: 0.85em;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+        .ozel-etkinlik-kutu:hover {
+            transform: scale(1.02);
+        }
+
+    .etkinlik-isimler {
+        font-size: 0.8em;
+        opacity: 0.95;
+    }
+</style>
+
+<!-- FullCalendar Kütüphanesi -->
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
 
+<!-- ========================================== -->
+<!-- 2. TAKVİM ALANI                            -->
+<!-- ========================================== -->
 <div class="row">
     <div class="col-12">
         <div class="card shadow-sm border-0">
             <div class="card-body">
-                <!-- Takvimin Çizileceği Alan -->
                 <div id="calendar"></div>
-                <div class="card mt-4 border-0 shadow-sm" id="gunlukEtkinliklerCard" style="display: none;">
-                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
-                        <h6 class="mb-0 fw-bold" id="seciliTarihBaslik"><i class="fa-regular fa-calendar-check me-2"></i>Seçili Tarih</h6>
-                        <button class="btn btn-sm btn-success fw-bold" id="btnYeniRezervasyon">
-                            <i class="fa-solid fa-plus me-1"></i> Bu Tarihe Yeni Kayıt
-                        </button>
-                    </div>
-                    <div class="card-body p-0">
-                        <ul class="list-group list-group-flush" id="etkinlikListesi">
-                            <!-- JavaScript ile doldurulacak -->
-                        </ul>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Yeni Rezervasyon Modalı (Takvime tıklayınca açılır) -->
+<!-- ========================================== -->
+<!-- 3. YENİ REZERVASYON FORMU (MODAL)          -->
+<!-- ========================================== -->
 <div class="modal fade" id="rezervasyonModal" tabindex="-1" aria-labelledby="rezervasyonModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
+
+            <!-- Modal Başlığı -->
             <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title" id="rezervasyonModalLabel"><i class="fa-solid fa-plus me-2"></i>Yeni Rezervasyon</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
+            <!-- Modal İçeriği (Form Alanları) -->
             <div class="modal-body bg-light">
                 <form id="rezervasyonForm">
 
-                    <!-- 1. Ana Kişi & İletişim -->
+                    <!-- KART 1: Ana İletişim Bilgileri -->
                     <div class="card mb-3 border-0 shadow-sm">
                         <div class="card-header bg-white fw-bold"><i class="fa-solid fa-user me-2"></i>Ana İletişim Bilgileri</div>
                         <div class="card-body row g-3">
@@ -63,32 +117,40 @@
                         </div>
                     </div>
 
-                    <!-- 2. Gelin & Damat Bilgileri -->
+                    <!-- KART 2: Gelin & Damat Bilgileri -->
                     <div class="card mb-3 border-0 shadow-sm">
                         <div class="card-header bg-white fw-bold"><i class="fa-solid fa-rings-wedding me-2"></i>Gelin & Damat</div>
                         <div class="card-body row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Gelin Ad Soyad</label>
-                                <input type="text" class="form-control" id="GelinAd">
+                                <label class="form-label">Gelin Ad Soyad *</label>
+                                <input type="text" class="form-control" id="GelinAd" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Damat Ad Soyad</label>
-                                <input type="text" class="form-control" id="DamatAd">
+                                <label class="form-label">Damat Ad Soyad *</label>
+                                <input type="text" class="form-control" id="DamatAd" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Gelin Telefon</label>
-                                <input type="tel" class="form-control">
+                                <label class="form-label">Gelin TC Kimlik No *</label>
+                                <input type="text" class="form-control" id="GelinTC" maxlength="11" placeholder="11 Haneli" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Damat Telefon</label>
-                                <input type="tel" class="form-control">
+                                <label class="form-label">Damat TC Kimlik No *</label>
+                                <input type="text" class="form-control" id="DamatTC" maxlength="11" placeholder="11 Haneli" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Gelin Telefon *</label>
+                                <input type="text" class="form-control" id="GelinTel" maxlength="11" placeholder="05XX XXX XX XX" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Damat Telefon *</label>
+                                <input type="text" class="form-control" id="DamatTel" maxlength="11" placeholder="05XX XXX XX XX" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             </div>
                         </div>
                     </div>
 
-                    <!-- 3. Tarih ve Saat -->
+                    <!-- KART 3: Tarih, Saat ve Mekan Seçimi -->
                     <div class="card mb-3 border-0 shadow-sm">
-                        <div class="card-header bg-white fw-bold"><i class="fa-solid fa-clock me-2"></i>Etkinlik Zamanı</div>
+                        <div class="card-header bg-white fw-bold"><i class="fa-solid fa-clock me-2"></i>Etkinlik Zamanı & Mekan</div>
                         <div class="card-body row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Başlangıç Tarihi ve Saati *</label>
@@ -98,19 +160,41 @@
                                 <label class="form-label">Bitiş Tarihi ve Saati *</label>
                                 <input type="datetime-local" class="form-control" required>
                             </div>
+                            <!-- MEKAN SEÇİMİ, ARTI VE EKSİ BUTONLARI -->
+                            <div class="col-md-12">
+                                <label class="form-label">Mekan / Plato *</label>
+                                <div class="input-group">
+                                    <select class="form-select" id="mekanSecimi" required>
+                                        <option value="0">Mekan / Plato Seçiniz...</option>
+                                    </select>
+                                    <!-- Yeni Mekan Ekleme Butonu (+) -->
+                                    <button class="btn btn-outline-success" type="button" data-bs-toggle="modal" data-bs-target="#yeniMekanModal" title="Yeni Mekan Ekle">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                    <!-- Seçili Mekanı Silme Butonu (-) -->
+                                    <button class="btn btn-outline-danger" type="button" id="btnMekanSil" title="Seçili Mekanı Sil">
+                                        <i class="fa-solid fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 4. Paketler ve Ücretlendirme -->
+                    <!-- KART 4: Finans ve Paketler (DİNAMİK) -->
                     <div class="card mb-3 border-0 shadow-sm">
                         <div class="card-header bg-white fw-bold"><i class="fa-solid fa-box-open me-2"></i>Paket Seçimi & Finans</div>
                         <div class="card-body row g-3">
                             <div class="col-md-8">
-                                <label class="form-label">Hizmet Paketi</label>
-                                <select class="form-select" id="paketSecimi">
-                                    <option value="0">Seçiniz...</option>
-                                    <option value="8000">Dış Çekim (8.000 ₺)</option>
-                                    <option value="25000">VIP Düğün Paketi (25.000 ₺)</option>
+                                <label class="form-label">Hizmet Paketi *</label>
+                                <select class="form-select" id="paketSecimi" required>
+                                    <option value="0" data-fiyat="0">Seçiniz...</option>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        foreach (var p in Model)
+                                        {
+                                            <option value="@p.Id" data-fiyat="@p.Fiyat">@p.PaketAdi (@p.Fiyat.ToString("N2") ₺)</option>
+                                        }
+                                    }
                                 </select>
                             </div>
                             <div class="col-md-4">
@@ -121,11 +205,12 @@
                                 <button type="button" class="btn btn-outline-danger" id="btnSozlesmeIndir" disabled>
                                     <i class="fa-solid fa-file-pdf me-2"></i>Sözleşme PDF İndir
                                 </button>
-                                <h5 class="text-primary fw-bold mb-0">Toplam Fiyat: <span id="toplamFiyatTutar">0</span> ₺</h5>
+                                <h5 class="text-primary fw-bold mb-0">Toplam Fiyat: <span id="toplamFiyatTutar">0,00</span> ₺</h5>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Notlar -->
                     <div class="col-12">
                         <label class="form-label">İşletme İçi Notlar (Müşteri Görmez)</label>
                         <textarea class="form-control" rows="2" placeholder="Örn: Kapora elden alındı, kalan düğün günü verilecek..."></textarea>
@@ -133,24 +218,127 @@
 
                 </form>
             </div>
+
+            <!-- Modal Alt Kısmı -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                <button type="button" class="btn btn-primary"><i class="fa-solid fa-check me-2"></i>Kaydet</button>
+                <button type="button" class="btn btn-primary" id="btnKaydet"><i class="fa-solid fa-check me-2"></i>Kaydet</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- YENİ MEKAN EKLEME MİNİ MODALI -->
+<div class="modal fade" id="yeniMekanModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white py-2">
+                <h6 class="modal-title"><i class="fa-solid fa-location-dot me-2"></i>Mekan / Plato Ekle</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body bg-light">
+                <div class="mb-2">
+                    <label class="form-label fw-bold small">Mekan / Plato Adı</label>
+                    <input type="text" id="yeniMekanAdiInput" class="form-control form-control-sm" placeholder="Örn: Balo Salonu / Kır Platosu">
+                </div>
+            </div>
+            <div class="modal-footer py-1">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-sm btn-success" id="btnMekanKaydet">Ekle</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- ========================================== -->
+<!-- 4. JAVASCRIPT KODLARI VE İŞLEVLER          -->
+<!-- ========================================== -->
 @section Scripts {
-    <!-- FullCalendar JS -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/tr.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('calendar');
 
+            // Sayfa açıldığında mekanları combobox'a doldur
+            mekanlariGetir();
+
+            function mekanlariGetir() {
+                fetch('/Rezervasyon/GetMekanlar')
+                    .then(response => response.json())
+                    .then(data => {
+                        var select = document.getElementById('mekanSecimi');
+                        select.innerHTML = '<option value="0">Mekan Seçiniz...</option>';
+                        data.forEach(m => {
+                            var opt = document.createElement('option');
+                            opt.value = m.id;
+                            opt.textContent = m.mekanAdi;
+                            select.appendChild(opt);
+                        });
+                    })
+                    .catch(err => console.log('Mekanlar yüklenirken hata:', err));
+            }
+
+            // Artı butonuna basıp yeni mekan kaydetme
+            document.getElementById('btnMekanKaydet').addEventListener('click', function () {
+                var mekanAdi = document.getElementById('yeniMekanAdiInput').value;
+                if (!mekanAdi) {
+                    alert("Lütfen mekan adı giriniz.");
+                    return;
+                }
+
+                fetch('/Rezervasyon/MekanEkle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mekanAdi: mekanAdi })
+                })
+                .then(res => res.json())
+                .then(resData => {
+                    if (resData.success) {
+                        document.getElementById('yeniMekanAdiInput').value = '';
+                        var modalEl = document.getElementById('yeniMekanModal');
+                        var modal = bootstrap.Modal.getInstance(modalEl);
+                        modal.hide();
+                        mekanlariGetir();
+                    } else {
+                        alert("Mekan eklenemedi.");
+                    }
+                });
+            });
+                // --- SEÇİLİ MEKANI SİLME İŞLEMİ (-) ---
+        document.getElementById('btnMekanSil').addEventListener('click', function () {
+            var select = document.getElementById('mekanSecimi');
+            var secilenId = select.value;
+            var secilenIsim = select.options[select.selectedIndex].text;
+
+            if (secilenId === "0" || !secilenId) {
+                alert("Lütfen silmek için listeden bir mekan / plato seçiniz.");
+                return;
+            }
+
+            if (confirm("'" + secilenIsim + "' mekanını silmek istediğinize emin misiniz?")) {
+                fetch('/Rezervasyon/MekanSil/' + secilenId, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Mekan başarıyla silindi.");
+                        mekanlariGetir(); // Listeyi yenile
+                    } else {
+                        alert("Silme başarısız: " + (data.mesaj || "Bu mekana bağlı rezervasyonlar olabilir."));
+                    }
+                })
+                .catch(err => {
+                    console.error('Hata:', err);
+                    alert("Sunucu ile iletişim kurulamadı.");
+                });
+            }
+        });
+            // --- A. TAKVİMİ SQL VERİLERİYLE BAŞLATMA ---
+            var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: 'tr',
@@ -160,58 +348,122 @@
                     right: 'dayGridMonth,timeGridWeek'
                 },
                 selectable: true,
+                dayMaxEvents: true,
 
-                // TEST VERİSİ (Senin verdiğin örnek)
-                events: [
-                    {
-                        title: 'Yıldız Düğün Salonu - Nişan Kutlaması',
-                        start: '2026-08-30',
-                        color: '#ffc107', // Sarı renk
-                        textColor: '#000'
+                events: '/Rezervasyon/GetRezervasyonlar',
+
+                eventContent: function(arg) {
+                    var isimlerText = arg.event.extendedProps.gelin && arg.event.extendedProps.damat
+                        ? arg.event.extendedProps.gelin + ' & ' + arg.event.extendedProps.damat
+                        : 'Rezervasyon';
+
+                    var saatText = "";
+                    if (arg.event.start) {
+                        var saat = arg.event.start.getHours().toString().padStart(2, '0');
+                        var dakika = arg.event.start.getMinutes().toString().padStart(2, '0');
+                        saatText = saat + ":" + dakika;
                     }
-                ],
 
-                // Takvimde bir güne tıklandığında çalışacak kod
+                    var html = `
+                        <div class="ozel-etkinlik-kutu" style="background-color: ${arg.event.backgroundColor};">
+                            <div class="etkinlik-isimler fw-bold">
+                                <i class="fa-regular fa-clock me-1"></i> ${saatText}
+                                <span class="mx-1">|</span>
+                                <i class="fa-solid fa-rings-wedding me-1"></i> ${isimlerText}
+                            </div>
+                        </div>
+                    `;
+                    return { html: html };
+                },
+
                 select: function (info) {
-                    // Paneli görünür yap ve başlığa tarihi yazdır
-                    document.getElementById('gunlukEtkinliklerCard').style.display = 'block';
-
-                    var tarihFormatli = new Date(info.startStr).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
-                    document.getElementById('seciliTarihBaslik').innerHTML = `<i class="fa-regular fa-calendar-check me-2"></i>${tarihFormatli} Etkinlikleri`;
-
-                    // Tıklanan gündeki etkinlikleri filtrele
-                    var etkinlikListesi = document.getElementById('etkinlikListesi');
-                    etkinlikListesi.innerHTML = ''; // Listeyi temizle
-
-                    var oGununEtkinlikleri = calendar.getEvents().filter(e => e.startStr === info.startStr);
-
-                    if (oGununEtkinlikleri.length > 0) {
-                        oGununEtkinlikleri.forEach(e => {
-                            etkinlikListesi.innerHTML += `
-                                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                                    <span><i class="fa-solid fa-circle-dot me-2" style="color: ${e.backgroundColor};"></i> <strong>${e.title}</strong></span>
-                                    <button class="btn btn-sm btn-outline-secondary">Detay</button>
-                                </li>`;
-                        });
-                    } else {
-                        etkinlikListesi.innerHTML = `<li class="list-group-item text-muted py-3 fst-italic">Bu tarihte planlanmış bir etkinlik bulunmuyor.</li>`;
-                    }
-
-                    document.getElementById('btnYeniRezervasyon').onclick = function() {
-                        document.getElementById('baslangicTarihi').value = info.startStr + "T09:00";
-                        var modal = new bootstrap.Modal(document.getElementById('rezervasyonModal'));
-                        modal.show();
-                    };
+                    document.getElementById('baslangicTarihi').value = info.startStr + "T09:00";
+                    var modal = new bootstrap.Modal(document.getElementById('rezervasyonModal'));
+                    modal.show();
                 }
             });
 
             calendar.render();
 
-            // Paket seçildiğinde fiyatı anında alt kısıma yansıt
+            // --- B. PAKET FİYATI HESAPLAMA ---
             document.getElementById('paketSecimi').addEventListener('change', function () {
-                var secilenFiyat = this.value;
-                document.getElementById('toplamFiyatTutar').innerText = new Intl.NumberFormat('tr-TR').format(secilenFiyat);
+                var secilenOption = this.options[this.selectedIndex];
+                var secilenFiyat = parseFloat(secilenOption.getAttribute('data-fiyat')) || 0;
+
+                document.getElementById('toplamFiyatTutar').innerText = new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2 }).format(secilenFiyat);
             });
+
+            // --- C. KAYDET BUTONUNA BASILINCA SQL'E GÖNDERME (AJAX) ---
+            document.getElementById('btnKaydet').addEventListener('click', function () {
+                var gelinTC = document.getElementById('GelinTC').value;
+                var damatTC = document.getElementById('DamatTC').value;
+                var gelinTel = document.getElementById('GelinTel').value;
+                var damatTel = document.getElementById('DamatTel').value;
+                var mekanId = document.getElementById('mekanSecimi').value;
+                var paketId = document.getElementById('paketSecimi').value;
+
+                if (mekanId === "0") {
+                    alert("Lütfen bir düğün mekanı seçiniz.");
+                    return;
+                }
+                if (paketId === "0") {
+                    alert("Lütfen bir hizmet paketi seçiniz.");
+                    return;
+                }
+                if (gelinTel.length < 10 || damatTel.length < 10) {
+                    alert("HATA: Lütfen telefon numaralarını eksiksiz giriniz.");
+                    return;
+                }
+                if (gelinTC.length !== 11 || damatTC.length !== 11) {
+                    alert("HATA: TC Kimlik Numaraları tam 11 haneli olmalıdır!");
+                    return;
+                }
+
+                var gonderilecekVeri = {
+                    AnaAdSoyad: document.getElementById('AnaAdSoyad').value,
+                    AnaTelefon: document.querySelector('input[type="tel"]').value,
+                    Email: document.querySelector('input[type="email"]').value,
+                    Adres: document.querySelector('textarea').value,
+
+                    GelinAd: document.getElementById('GelinAd').value,
+                    DamatAd: document.getElementById('DamatAd').value,
+                    GelinTC: gelinTC,
+                    DamatTC: damatTC,
+                    GelinTel: gelinTel,
+                    DamatTel: damatTel,
+
+                    Baslangic: document.getElementById('baslangicTarihi').value,
+                    Bitis: document.querySelectorAll('input[type="datetime-local"]')[1].value,
+
+                    MekanId: parseInt(mekanId),
+                    PaketId: parseInt(paketId),
+                    PaketFiyati: parseFloat(document.getElementById('paketSecimi').options[document.getElementById('paketSecimi').selectedIndex].getAttribute('data-fiyat')) || 0,
+                    Kapora: parseFloat(document.querySelector('input[type="number"]').value) || 0,
+                    Notlar: document.querySelectorAll('textarea')[1].value
+                };
+
+                fetch('/Rezervasyon/YeniKayit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(gonderilecekVeri)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Mükemmel! Kayıt başarıyla SQL'e eklendi.");
+                        var modal = bootstrap.Modal.getInstance(document.getElementById('rezervasyonModal'));
+                        modal.hide();
+                        window.location.reload();
+                    } else {
+                        alert("Kayıt sırasında hata oluştu: " + data.mesaj);
+                    }
+                })
+                .catch(error => {
+                    console.error('Hata:', error);
+                    alert("Sunucu ile iletişim kurulamadı.");
+                });
+            });
+
         });
     </script>
 }

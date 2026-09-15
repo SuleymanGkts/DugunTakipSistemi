@@ -1,60 +1,120 @@
-﻿@{
-    ViewData["Title"] = "Gösterge Paneli";
-}
+﻿<div class="card shadow-sm border-0 mt-4">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center flex-wrap gap-2 py-3">
+        <h5 class="mb-0"><i class="fa-solid fa-calendar-day me-2"></i>Günlük Operasyon Paneli</h5>
 
-<h2 class="mb-4">Gösterge Paneli</h2>
-
-<div class="row">
-    <!-- Ciro Kartı -->
-    <div class="col-md-3 mb-4">
-        <div class="card bg-primary text-white h-100 shadow-sm border-0">
-            <div class="card-body py-4">
-                <h6 class="card-title text-uppercase text-white-50">Bu Ayki Ciro</h6>
-                <h2 class="display-6 fw-bold mb-0">125.000 ₺</h2>
-            </div>
+        <!-- DÜN, BUGÜN, YARIN FİLTRELEME BUTONLARI -->
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-light btn-sm" onclick="filtrele('dun')">Dün</button>
+            <button type="button" class="btn btn-light btn-sm active" onclick="filtrele('bugun')">Bugün</button>
+            <button type="button" class="btn btn-outline-light btn-sm" onclick="filtrele('yarin')">Yarın</button>
         </div>
     </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Tarih / Gün</th>
+                        <th>Saat</th>
+                        <th>Mekan / Plato</th>
+                        <th>Gelin & Damat</th>
+                        <th>İşletme Notu / Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody id="operasyonTabloGovdesi">
+                    @if (ViewBag.AktifIsler != null && ((List<DugunTakipSistemi.Models.Rezervasyon>)ViewBag.AktifIsler).Any())
+                    {
+                        foreach (var item in (List<DugunTakipSistemi.Models.Rezervasyon>)ViewBag.AktifIsler)
+                        {
+                            var tarihFarki = item.BaslangicTarihi.Date - DateTime.Today;
+                            string rozet = "";
+                            string satirClass = "";
+                            string veriGunu = "bugun";
 
-    <!-- Bekleyen Alacak Kartı -->
-    <div class="col-md-3 mb-4">
-        <div class="card bg-warning text-dark h-100 shadow-sm border-0">
-            <div class="card-body py-4">
-                <h6 class="card-title text-uppercase text-dark-50">Bekleyen Alacaklar</h6>
-                <h2 class="display-6 fw-bold mb-0">45.000 ₺</h2>
-            </div>
-        </div>
-    </div>
+                            if (tarihFarki.Days == 0)
+                            {
+                                rozet = "<span class='badge bg-success'>BUGÜN</span>";
+                                satirClass = "table-success is-satiri bugun-satir";
+                                veriGunu = "bugun";
+                            }
+                            else if (tarihFarki.Days == 1)
+                            {
+                                rozet = "<span class='badge bg-primary'>YARIN</span>";
+                                satirClass = "is-satiri yarin-satir";
+                                veriGunu = "yarin";
+                            }
+                            else if (tarihFarki.Days == -1)
+                            {
+                                rozet = "<span class='badge bg-secondary'>DÜN</span>";
+                                satirClass = "is-satiri dun-satir";
+                                veriGunu = "dun";
+                            }
 
-    <!-- Yaklaşan Rezervasyonlar Kartı -->
-    <div class="col-md-3 mb-4">
-        <div class="card bg-success text-white h-100 shadow-sm border-0">
-            <div class="card-body py-4">
-                <h6 class="card-title text-uppercase text-white-50">Bu Haftaki İşler</h6>
-                <h2 class="display-6 fw-bold mb-0">8 Rezervasyon</h2>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toplam Gider Kartı -->
-    <div class="col-md-3 mb-4">
-        <div class="card bg-danger text-white h-100 shadow-sm border-0">
-            <div class="card-body py-4">
-                <h6 class="card-title text-uppercase text-white-50">Aylık Gider</h6>
-                <h2 class="display-6 fw-bold mb-0">12.500 ₺</h2>
-            </div>
+                            <tr class="@satirClass" data-gun="@veriGunu">
+                                <td class="fw-bold">@Html.Raw(rozet) <br><small class="text-muted">@item.BaslangicTarihi.ToString("dd.MM.yyyy")</small></td>
+                                <td><i class="fa-regular fa-clock me-1 text-danger"></i><strong>@item.BaslangicTarihi.ToString("HH:mm")</strong></td>
+                                <td><i class="fa-solid fa-location-dot me-1 text-success"></i>@(item.Mekan != null ? item.Mekan.MekanAdi : "Mekan Belirtilmemiş")</td>
+                                <td>@(item.Musteri != null ? item.Musteri.GelinAdSoyad + " & " + item.Musteri.DamatAdSoyad : "İsim Yok")</td>
+                                <td>
+                                    <span class="text-dark">@(string.IsNullOrEmpty(item.Notlar) ? "Not girilmemiş." : item.Notlar)</span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">Kayıtlı herhangi bir organizasyon bulunmuyor.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<div class="row mt-2">
-    <div class="col-12">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-white py-3">
-                <h5 class="mb-0">Yaklaşan Etkinlikler</h5>
-            </div>
-            <div class="card-body">
-                <p class="text-muted">Buraya takvimdeki en yakın 5 işin listesi gelecek.</p>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- ANLIK FİLTRELEME İÇİN JAVASCRIPT -->
+<script>
+    function filtrele(secilenGun) {
+        // Butonların aktiflik (active) sınıflarını düzenle
+        var butonlar = document.querySelectorAll('.btn-group .btn');
+        butonlar.forEach(b => {
+            b.classList.remove('btn-light', 'active');
+            b.classList.add('btn-outline-light');
+        });
+
+        event.target.classList.remove('btn-outline-light');
+        event.target.classList.add('btn-light', 'active');
+
+        // Tablodaki satırları süz
+        var satirlar = document.querySelectorAll('.is-satiri');
+        var gosterilenSayac = 0;
+
+        satirlar.forEach(satir => {
+            var satirGunu = satir.getAttribute('data-gun');
+            if (satirGunu === secilenGun) {
+                satir.style.display = '';
+                gosterilenSayac++;
+            } else {
+                satir.style.display = 'none';
+            }
+        });
+    }
+
+    // Sayfa ilk açıldığında otomatik olarak "Bugün" seçili gelsin ve sadece bugün gösterilsin
+    document.addEventListener("DOMContentLoaded", function() {
+        filtreleIlkAcilis('bugun');
+    });
+
+    function filtreleIlkAcilis(secilenGun) {
+        var satirlar = document.querySelectorAll('.is-satiri');
+        satirlar.forEach(satir => {
+            var satirGunu = satir.getAttribute('data-gun');
+            if (satirGunu === secilenGun) {
+                satir.style.display = '';
+            } else {
+                satir.style.display = 'none';
+            }
+        });
+    }
+</script>

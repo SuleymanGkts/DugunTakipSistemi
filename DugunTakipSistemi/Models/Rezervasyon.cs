@@ -1,4 +1,6 @@
-﻿namespace DugunTakipSistemi.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DugunTakipSistemi.Models
 {
     public class Rezervasyon
     {
@@ -20,5 +22,10 @@
         public decimal KalanBakiye => ToplamUcret - AlinanKapora;
 
         public string? SozlesmeDetayi { get; set; }
+        public int MekanId { get; set; }
+        public Mekan? Mekan { get; set; }
+        [DataType(DataType.MultilineText)]
+        public string? Notlar { get; set; }
+
     }
 }

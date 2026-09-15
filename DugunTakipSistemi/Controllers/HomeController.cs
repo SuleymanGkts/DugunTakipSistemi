@@ -1,32 +1,39 @@
-using System.Diagnostics;
-using DugunTakipSistemi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using DugunTakipSistemi.Models; // Kendi namespace'ine göre burasý deðiþebilir
 
-namespace DugunTakipSistemi.Controllers
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly ILogger<HomeController> _logger;
+    private readonly ApplicationDbContext _context; // 1. DbContext'i tanýmlýyoruz
+
+    // 2. Constructor (Yapýcý metot) ile dependency injection yapýyoruz
+    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
     {
-        private readonly ILogger<HomeController> _logger;
+        _logger = logger;
+        _context = context;
+    }
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+    public IActionResult Index()
+    {
+        var bugun = DateTime.Today;
+        var dun = bugun.AddDays(-1);
+        var yarin = bugun.AddDays(1);
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        var aktifIsler = _context.Rezervasyonlar
+            .Include(r => r.Mekan)
+            .Include(r => r.Musteri)
+            .Where(r => r.BaslangicTarihi.Date >= dun && r.BaslangicTarihi.Date <= yarin)
+            .OrderBy(r => r.BaslangicTarihi)
+            .ToList();
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        ViewBag.AktifIsler = aktifIsler;
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        return View();
+    }
+
+    public IActionResult Privacy()
+    {
+        return View();
     }
 }

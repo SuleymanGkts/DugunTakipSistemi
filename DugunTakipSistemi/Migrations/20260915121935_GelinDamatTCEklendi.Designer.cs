@@ -4,6 +4,7 @@ using DugunTakipSistemi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DugunTakipSistemi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260915121935_GelinDamatTCEklendi")]
+    partial class GelinDamatTCEklendi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,23 +49,6 @@ namespace DugunTakipSistemi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Giderler");
-                });
-
-            modelBuilder.Entity("DugunTakipSistemi.Models.Mekan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("MekanAdi")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Mekanlar", (string)null);
                 });
 
             modelBuilder.Entity("DugunTakipSistemi.Models.Musteri", b =>
@@ -153,14 +139,8 @@ namespace DugunTakipSistemi.Migrations
                     b.Property<DateTime>("BitisTarihi")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("MekanId")
-                        .HasColumnType("int");
-
                     b.Property<int>("MusteriId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Notlar")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PaketId")
                         .HasColumnType("int");
@@ -173,8 +153,6 @@ namespace DugunTakipSistemi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MekanId");
-
                     b.HasIndex("MusteriId");
 
                     b.HasIndex("PaketId");
@@ -184,12 +162,6 @@ namespace DugunTakipSistemi.Migrations
 
             modelBuilder.Entity("DugunTakipSistemi.Models.Rezervasyon", b =>
                 {
-                    b.HasOne("DugunTakipSistemi.Models.Mekan", "Mekan")
-                        .WithMany()
-                        .HasForeignKey("MekanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DugunTakipSistemi.Models.Musteri", "Musteri")
                         .WithMany("Rezervasyonlar")
                         .HasForeignKey("MusteriId")
@@ -201,8 +173,6 @@ namespace DugunTakipSistemi.Migrations
                         .HasForeignKey("PaketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Mekan");
 
                     b.Navigation("Musteri");
 

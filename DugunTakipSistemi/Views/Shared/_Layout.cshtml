@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Düğün Takip</title>
 
-    <!-- ========================================== -->
-    <!-- CSS DOSYALARI VE TEMEL AYARLAR             -->
-    <!-- ========================================== -->
+    <!-- CSS Dosyaları -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <!-- İkonlar için FontAwesome CDN -->
+    <!-- FontAwesome İkonları -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -18,50 +16,50 @@
         <div class="row flex-nowrap">
 
             <!-- ========================================== -->
-            <!-- SOL MENÜ (SIDEBAR) BAŞLANGICI              -->
+            <!-- SOL MENÜ (SIDEBAR)                         -->
             <!-- ========================================== -->
             <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
                 <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
 
-                    <!-- LOGO VE BAŞLIK -->
+                    <!-- Logo & Başlık -->
                     <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none mt-3">
                         <span class="fs-5 d-none d-sm-inline fw-bold">Düğün Takip Sistemi</span>
                     </a>
 
-                    <!-- MENÜ LİNKLERİ -->
+                    <!-- Menü Linkleri -->
                     <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100 mt-4" id="menu">
 
-                        <!-- 1. GÖSTERGE PANELİ -->
+                        <!-- 1. Gösterge Paneli -->
                         <li class="nav-item w-100 mb-2">
                             <a asp-controller="Home" asp-action="Index" class="nav-link text-white">
                                 <i class="fa-solid fa-chart-pie me-2"></i> <span class="d-none d-sm-inline">Gösterge Paneli</span>
                             </a>
                         </li>
 
-                        <!-- 2. TAKVİM VE REZERVASYON (Aktif Edildi) -->
+                        <!-- 2. Takvim & Rezervasyon -->
                         <li class="nav-item w-100 mb-2">
                             <a asp-controller="Rezervasyon" asp-action="Index" class="nav-link text-white">
                                 <i class="fa-solid fa-calendar-days me-2"></i> <span class="d-none d-sm-inline">Takvim & Rezervasyon</span>
                             </a>
                         </li>
 
-                        <!-- 3. MÜŞTERİLER -->
+                        <!-- 3. Müşteriler -->
                         <li class="nav-item w-100 mb-2">
                             <a href="#" class="nav-link text-white">
                                 <i class="fa-solid fa-users me-2"></i> <span class="d-none d-sm-inline">Müşteriler</span>
                             </a>
                         </li>
 
-                        <!-- 4. FİNANS PANELİ -->
+                        <!-- 4. Finans Paneli -->
                         <li class="nav-item w-100 mb-2">
                             <a href="#" class="nav-link text-white">
                                 <i class="fa-solid fa-wallet me-2"></i> <span class="d-none d-sm-inline">Finans Paneli</span>
                             </a>
                         </li>
 
-                        <!-- 5. PAKETLER VE HİZMETLER -->
+                        <!-- 5. Paketler (DÜZELTİLDİ: Artık PaketlerController'a gidiyor) -->
                         <li class="nav-item w-100 mb-2">
-                            <a href="#" class="nav-link text-white">
+                            <a asp-controller="Paketler" asp-action="Index" class="nav-link text-white">
                                 <i class="fa-solid fa-box-open me-2"></i> <span class="d-none d-sm-inline">Paketler</span>
                             </a>
                         </li>
@@ -69,33 +67,26 @@
                     </ul>
                 </div>
             </div>
-            <!-- SOL MENÜ BİTİŞİ -->
+            <!-- Sol Menü Bitişi -->
             <!-- ========================================== -->
-            <!-- ========================================== -->
-            <!-- SAĞ İÇERİK ALANI (SAYFALARIN YÜKLENDİĞİ YER)-->
+            <!-- SAĞ İÇERİK ALANI                           -->
             <!-- ========================================== -->
             <div class="col py-4 bg-light">
                 <main role="main" class="pb-3 px-3">
-
-                    <!-- Index.cshtml, Rezervasyon.cshtml vb. buraya gelir -->
                     @RenderBody()
-
                 </main>
             </div>
-            <!-- SAĞ İÇERİK BİTİŞİ -->
-            <!-- ========================================== -->
+            <!-- Sağ İçerik Bitişi -->
 
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- JAVASCRIPT KÜTÜPHANELERİ                   -->
-    <!-- ========================================== -->
+    <!-- JavaScript Kütüphaneleri -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <!-- İlgili sayfalardaki özel JS kodlarını buraya çeker (Örn: FullCalendar) -->
+    <!-- Sayfalara Özel Script Alanı -->
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

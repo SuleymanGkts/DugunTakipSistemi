@@ -15,6 +15,8 @@
         public string? DamatTelefon { get; set; } // Yeni Eklendi
 
         public string? Notlar { get; set; } // İşletmeye özel iç notlar
+        public string? GelinTC { get; set; }
+        public string? DamatTC { get; set; }
 
         public ICollection<Rezervasyon>? Rezervasyonlar { get; set; }
     }
