@@ -1,0 +1,376 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Gökçe Prime</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+            :root {
+                --sidebar-width: 260px;
+                --sidebar-bg: #1e1e2d; 
+                --sidebar-hover: #2b2b40;
+                --text-color: #a2a3b7;
+                --text-active: #ffffff;
+                --primary-color: #6993ff;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                display: flex;
+                height: 100vh;
+                overflow: hidden;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f3f6f9;
+            }
+
+            #sidebar {
+                width: var(--sidebar-width);
+                background-color: var(--sidebar-bg);
+                color: var(--text-color);
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                transition: width 0.3s ease;
+                min-width: 70px;
+                max-width: 500px;
+                z-index: 100;
+            }
+
+            #sidebar.collapsed {
+                width: 70px !important;
+            }
+
+            .sidebar-header {
+                height: 70px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 20px;
+                background-color: rgba(0,0,0,0.1);
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+            }
+
+            .brand-text {
+                color: var(--text-active);
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin: 0;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+
+            #sidebar.collapsed .brand-text,
+            #sidebar.collapsed .menu-text,
+            #sidebar.collapsed .quick-notes-container {
+                display: none;
+            }
+
+            .toggle-btn {
+                background: none;
+                border: none;
+                color: var(--text-color);
+                cursor: pointer;
+                font-size: 1.2rem;
+                padding: 5px;
+                transition: color 0.2s;
+            }
+
+            #sidebar.collapsed .sidebar-header {
+                justify-content: center; 
+                padding: 0;
+            }
+
+            .toggle-btn:hover {
+                color: var(--text-active);
+            }
+
+            .sidebar-menu {
+                list-style: none;
+                padding: 15px 0;
+                margin: 0;
+                flex-grow: 1;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            .sidebar-menu li a {
+                display: flex;
+                align-items: center;
+                padding: 12px 20px;
+                color: var(--text-color);
+                text-decoration: none;
+                transition: all 0.3s;
+                white-space: nowrap;
+            }
+
+            .sidebar-menu li a:hover, .sidebar-menu li a.active {
+                background-color: var(--sidebar-hover);
+                color: var(--text-active);
+                border-left: 3px solid var(--primary-color);
+            }
+
+            .sidebar-menu li a i {
+                font-size: 1.2rem;
+                min-width: 30px; 
+                text-align: center;
+            }
+
+            #sidebar.collapsed .sidebar-menu li a {
+                padding: 12px 0;
+                justify-content: center;
+            }
+
+            .quick-notes-container {
+                padding: 15px;
+                background-color: rgba(0,0,0,0.15);
+                border-top: 1px solid rgba(255,255,255,0.05);
+            }
+
+            .quick-note-title {
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                margin-bottom: 10px;
+                color: var(--text-active);
+                font-weight: 600;
+            }
+
+            .quick-notes-container textarea {
+                width: 100%;
+                background-color: rgba(255,255,255,0.05);
+                border: 1px solid rgba(255,255,255,0.1);
+                color: #fff;
+                border-radius: 4px;
+                padding: 8px;
+                font-size: 0.85rem;
+                resize: vertical;
+                min-height: 60px;
+            }
+
+            .quick-notes-container textarea:focus {
+                outline: none;
+                border-color: var(--primary-color);
+            }
+
+            .btn-save-note {
+                width: 100%;
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 6px;
+                margin-top: 8px;
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+
+            .btn-save-note:hover {
+                background-color: #5578d6;
+            }
+
+            .resizer {
+                width: 4px;
+                cursor: col-resize;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                background-color: transparent;
+                transition: background-color 0.2s;
+            }
+
+            .resizer:hover, .resizer.resizing {
+                background-color: var(--primary-color);
+            }
+
+            .main-content {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            .topbar {
+                height: 70px;
+                background-color: #fff;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+                display: flex;
+                align-items: center;
+                padding: 0 20px;
+                z-index: 10;
+            }
+
+            .content-wrapper {
+                padding: 20px;
+                flex-grow: 1;
+                overflow-y: auto;
+            }
+
+            ::-webkit-scrollbar { width: 6px; }
+            ::-webkit-scrollbar-track { background: transparent; }
+            ::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h3 class="brand-text">Gökçe Prime</h3>
+            <button id="toggleSidebar" class="toggle-btn" title="Menüyü Daralt/Genişlet">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="/Home/Index">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span class="menu-text">Gösterge Paneli</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Rezervasyon/Index">
+                    <i class="fa-regular fa-calendar-days"></i>
+                    <span class="menu-text">Takvim & Rezervasyon</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Musteriler/Index">
+                    <i class="fa-solid fa-users"></i>
+                    <span class="menu-text">Müşteriler</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Finans/Index">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span class="menu-text">Finans Paneli</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Paketler/Index">
+                    <i class="fa-solid fa-box-open"></i>
+                    <span class="menu-text">Paketler</span>
+                </a>
+            </li>
+            <li>
+                <a href="/GenelNot/Index">
+                    <i class="fa-solid fa-sticky-note"></i>
+                    <span class="menu-text">Notlar</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="quick-notes-container">
+            <div class="quick-note-title"><i class="fa-solid fa-pen-to-square"></i> Hızlı Not Al</div>
+            <textarea id="quickNoteInput" placeholder="Aklınıza gelenleri yazın..."></textarea>
+            <button class="btn-save-note" onclick="saveQuickNote()">Kaydet</button>
+        </div>
+
+        <div class="resizer" id="resizer"></div>
+    </aside>
+
+    <div class="main-content">
+        <header class="topbar">
+            <h5 class="m-0 text-muted fw-bold">@ViewData["Title"]</h5>
+            <div class="ms-auto">
+                <span class="badge bg-primary rounded-pill p-2" style="font-size: 14px;">Gökçe Prime Admin</span>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const sidebar = document.getElementById('sidebar');
+                const resizer = document.getElementById('resizer');
+                const toggleBtn = document.getElementById('toggleSidebar');
+                let isResizing = false;
+
+                toggleBtn.addEventListener('click', function () {
+                    sidebar.classList.toggle('collapsed');
+
+                    if (!sidebar.classList.contains('collapsed')) {
+                        let savedWidth = localStorage.getItem('sidebarWidth') || '260px';
+                        sidebar.style.setProperty('--sidebar-width', savedWidth);
+                    }
+                });
+
+                resizer.addEventListener('mousedown', function (e) {
+                    if(sidebar.classList.contains('collapsed')) return; 
+
+                    isResizing = true;
+                    resizer.classList.add('resizing');
+                    document.body.style.cursor = 'col-resize';
+                    e.preventDefault();
+                });
+
+                document.addEventListener('mousemove', function (e) {
+                    if (!isResizing) return;
+
+                    let newWidth = e.clientX;
+                    if (newWidth < 150) newWidth = 150; 
+                    if (newWidth > 500) newWidth = 500; 
+
+                    sidebar.style.setProperty('--sidebar-width', newWidth + 'px');
+                });
+
+                document.addEventListener('mouseup', function () {
+                    if (isResizing) {
+                        isResizing = false;
+                        resizer.classList.remove('resizing');
+                        document.body.style.cursor = 'default';
+
+                        localStorage.setItem('sidebarWidth', sidebar.style.getPropertyValue('--sidebar-width'));
+                    }
+                });
+
+                let savedWidth = localStorage.getItem('sidebarWidth');
+                if(savedWidth && !sidebar.classList.contains('collapsed')) {
+                    sidebar.style.setProperty('--sidebar-width', savedWidth);
+                }
+            });
+
+            function saveQuickNote() {
+    var text = document.getElementById('quickNoteInput').value;
+    if(text.trim() === '') {
+        alert('Lütfen bir not girin!');
+        return;
+    }
+
+    $.ajax({
+        url: '/GenelNot/HizliNotEkle',
+        type: 'POST',
+        data: { icerik: text },
+        success: function(response) {
+            if(response.success) {
+                document.getElementById('quickNoteInput').value = '';
+                
+                if(window.location.pathname.toLowerCase().includes('/genelnot')) {
+                    location.reload();
+                } else {
+                    alert('Not başarıyla kaydedildi!');
+                }
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function() {
+            alert('Not kaydedilirken bir hata oluştu.');
+        }
+    });
+}
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

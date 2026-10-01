@@ -11,8 +11,8 @@ namespace DugunTakipSistemi.Models
         public Musteri Musteri { get; set; }
 
         // Paket/Hizmet Bağlantısı
-        public int PaketId { get; set; }
-        public Paket Paket { get; set; }
+        public int? PaketId { get; set; }
+        public Paket? Paket { get; set; }
 
         public DateTime BaslangicTarihi { get; set; } // Takvim başlangıç
         public DateTime BitisTarihi { get; set; }   // Takvim bitiş
@@ -26,6 +26,20 @@ namespace DugunTakipSistemi.Models
         public Mekan? Mekan { get; set; }
         [DataType(DataType.MultilineText)]
         public string? Notlar { get; set; }
+        // ... (Senin mevcut kodların)
+        [DataType(DataType.MultilineText)]
+
+        public int? KisiSayisi { get; set; }
+
+
+
+        public string? SozlesmeDosyaYolu { get; set; }
+
+        // Bu rezervasyona yapılan tüm ödemelerin geçmişi
+        public ICollection<Odeme>? Odemeler { get; set; }
+
+       
+        public ICollection<Personel>? Personeller { get; set; }
 
     }
 }

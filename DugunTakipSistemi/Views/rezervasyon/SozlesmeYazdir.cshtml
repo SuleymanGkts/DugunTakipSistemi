@@ -1,0 +1,194 @@
+﻿@model DugunTakipSistemi.Models.Rezervasyon
+@{
+    Layout = null; 
+    
+    // Çift bilgisi tam girilmiş mi kontrolü
+    bool ciftVarMi = !string.IsNullOrWhiteSpace(Model.Musteri.GelinAdSoyad) || !string.IsNullOrWhiteSpace(Model.Musteri.DamatAdSoyad);
+    
+    string gelinAd = !string.IsNullOrWhiteSpace(Model.Musteri.GelinAdSoyad) ? Model.Musteri.GelinAdSoyad : "Gelin";
+    string damatAd = !string.IsNullOrWhiteSpace(Model.Musteri.DamatAdSoyad) ? Model.Musteri.DamatAdSoyad : "Damat";
+    
+    string musteriIsim = ciftVarMi ? $"{gelinAd} & {damatAd}" : Model.Musteri.AdSoyad;
+    
+    // Otomatik sözleşme numarası (Örn: GKP-0024/2026)
+    string sozlesmeNo = $"GKP-{Model.Id.ToString("D4")}/{DateTime.Now.Year}";
+    string bugun = DateTime.Now.ToString("dd.MM.yyyy");
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <title>Sözleşme - @musteriIsim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* Arka plan ve genel yapı */
+        body { background-color: #3b3f45; font-family: 'Times New Roman', Times, serif; display: flex; justify-content: center; padding: 20px; color: #000; }
+        
+        /* A4 Kağıdı Optimizasyonu */
+        .a4-paper { 
+            width: 210mm; 
+            min-height: 297mm; 
+            background: white; 
+            padding: 25mm 20mm; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); 
+            margin: 0 auto; 
+            position: relative;
+        }
+
+        /* Başlıklar ve Çizgiler */
+        .header-container { border-bottom: 3px double #000; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .firm-name { font-size: 28px; font-weight: 900; letter-spacing: 2px; margin: 0; font-family: 'Arial', sans-serif; }
+        .firm-desc { font-size: 13px; font-style: italic; color: #444; }
+        .doc-info { text-align: right; font-size: 13px; font-family: 'Arial', sans-serif; }
+        
+        .main-title { text-align: center; font-size: 20px; font-weight: bold; text-decoration: underline; margin-bottom: 25px; letter-spacing: 1px; }
+        .section-title { font-weight: bold; font-size: 15px; margin-top: 20px; margin-bottom: 10px; border-bottom: 1px solid #000; padding-bottom: 3px; text-transform: uppercase; }
+        
+        /* Resmi Tablolar */
+        .official-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-family: 'Arial', sans-serif; font-size: 13px; }
+        .official-table th, .official-table td { border: 1px solid #000; padding: 8px 12px; }
+        .official-table th { background-color: #f2f2f2; width: 35%; text-align: left; font-weight: bold; }
+        
+        /* İmza Alanı */
+        .signature-section { margin-top: 60px; font-family: 'Arial', sans-serif; }
+        .sig-box { text-align: center; font-size: 14px; }
+        .sig-line { width: 80%; border-top: 1px solid #000; margin: 60px auto 10px auto; }
+        
+        /* Düzenlenebilir alan vurgusu */
+        .editable-area { border: 1px dashed #aaa; padding: 15px; border-radius: 4px; background-color: #fdfdfd; outline: none; transition: all 0.3s; font-size: 13px; text-align: justify; line-height: 1.6; }
+        .editable-area:focus { background-color: #fff; border-color: #000; border-style: solid; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        
+        /* Buton */
+        .print-btn-container { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+        
+        /* Yazdırılırken gizlenecekler ve sayfa ayarları */
+        @@media print {
+            body { background: white; padding: 0; }
+            .a4-paper { box-shadow: none; width: 100%; padding: 0; }
+            .print-btn-container, .d-print-none { display: none !important; }
+            .editable-area { border: none; padding: 0; background: transparent; }
+            @@page { size: A4; margin: 15mm; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- YAZDIR BUTONU -->
+    <div class="print-btn-container d-print-none">
+        <button onclick="window.print()" class="btn btn-dark btn-lg shadow fw-bold border border-light">
+            <i class="fa-solid fa-print me-2"></i> RESMİ YAZDIR / PDF AL
+        </button>
+    </div>
+
+    <div class="a4-paper">
+        
+        <!-- ÜST BİLGİ (ANTET) -->
+        <div class="header-container">
+            <div>
+                <h1 class="firm-name">GÖKÇE PRIME</h1>
+                <div class="firm-desc">Organizasyon & Etkinlik Yönetim Hizmetleri</div>
+            </div>
+            <div class="doc-info">
+                <strong>Sözleşme No:</strong> @sozlesmeNo<br />
+                <strong>Düzenlenme Tarihi:</strong> @bugun
+            </div>
+        </div>
+
+        <div class="main-title">ORGANİZASYON HİZMET SÖZLEŞMESİ</div>
+
+        <!-- 1. TARAFLAR -->
+        <div class="section-title">MADDE 1: TARAFLAR VE İLETİŞİM BİLGİLERİ</div>
+        <table class="official-table">
+            <tr><th>Sözleşme Sahibi (Müşteri)</th><td>@Model.Musteri.AdSoyad.ToUpper()</td></tr>
+            <tr><th>İletişim Numarası</th><td>@Model.Musteri.Telefon</td></tr>
+            <tr><th>T.C. Kimlik / Açık Adres</th><td>@(!string.IsNullOrEmpty(Model.Musteri.Adres) ? Model.Musteri.Adres : "...................................................................................")</td></tr>
+            @if(ciftVarMi)
+            {
+                <tr><th>Gelin Adı Soyadı</th><td>@gelinAd.ToUpper() @(!string.IsNullOrEmpty(Model.Musteri.GelinTelefon) ? $" (Tel: {Model.Musteri.GelinTelefon})" : "")</td></tr>
+                <tr><th>Damat Adı Soyadı</th><td>@damatAd.ToUpper() @(!string.IsNullOrEmpty(Model.Musteri.DamatTelefon) ? $" (Tel: {Model.Musteri.DamatTelefon})" : "")</td></tr>
+            }
+        </table>
+
+        <!-- 2. HİZMETİN KAPSAMI -->
+        <div class="section-title">MADDE 2: HİZMETİN KAPSAMI VE DETAYLARI</div>
+        <table class="official-table">
+            <tr><th>Organizasyon Türü</th><td>@Model.SozlesmeDetayi.ToUpper()</td></tr>
+            <tr><th>Etkinlik Tarihi ve Saati</th><td><strong>@Model.BaslangicTarihi.ToString("dd MMMM yyyy dddd")</strong> - Başlama Saati: <strong>@Model.BaslangicTarihi.ToString("HH:mm")</strong></td></tr>
+            <tr><th>Etkinlik Mekanı / Salon</th><td>@(Model.Mekan != null ? Model.Mekan.MekanAdi.ToUpper() : "BELİRTİLMEMİŞ")</td></tr>
+            <tr><th>Planlanan Kişi Sayısı</th><td>@(Model.KisiSayisi != null ? Model.KisiSayisi + " Kişi" : ".................. Kişi")</td></tr>
+            <tr><th>Özel İstekler / Notlar</th><td>@(string.IsNullOrEmpty(Model.Notlar) ? "Belirtilmemiştir." : Model.Notlar)</td></tr>
+        </table>
+
+        <!-- 3. MALİ HÜKÜMLER -->
+        <div class="section-title">MADDE 3: MALİ HÜKÜMLER VE ÖDEME PLANI</div>
+        <table class="official-table">
+            <tr><th>Hizmetin Toplam Bedeli</th><td><strong>@Model.ToplamUcret.ToString("N2") TL</strong> (KDV Dahil/Hariç)</td></tr>
+            <tr><th>Alınan Peşinat (Kapora)</th><td>@Model.AlinanKapora.ToString("N2") TL</td></tr>
+            <tr><th>Kalan Bakiye Tutarı</th><td><strong>@Model.KalanBakiye.ToString("N2") TL</strong></td></tr>
+        </table>
+
+        <!-- 4. SÖZLEŞME ŞARTLARI (CANLI DÜZENLENEBİLİR ALAN) -->
+        <div class="section-title">MADDE 4: GENEL ŞARTLAR VE YÜKÜMLÜLÜKLER</div>
+        <div class="editable-area" contenteditable="true">
+            <div class="d-print-none text-danger mb-3 fw-bold" style="font-size:12px; font-family:'Arial'; border-bottom:1px solid #ccc; padding-bottom:5px;">
+                <i class="fa-solid fa-pen me-1"></i> Bu alandaki yazıları Word gibi silebilir veya firmanıza özel yeni maddeler ekleyebilirsiniz. (Yazdırıldığında bu kırmızı uyarı görünmez).
+            </div>
+            <p><strong>4.1.</strong> İşbu sözleşme, tarafların hür iradeleri ile yukarıda detayları belirtilen organizasyon hizmetinin eksiksiz sunulması amacıyla tanzim ve imza edilmiştir.</p>
+            <p><strong>4.2.</strong> Organizasyon tarihi için alınan <strong>peşinat (kapora) bedeli</strong>, Müşteri tarafından organizasyonun tek taraflı iptali durumunda, firmanın o tarihteki iş kaybını tazmin amacıyla kesinlikle iade edilmez.</p>
+            <p><strong>4.3.</strong> Kalan bakiye tutarı, organizasyon başlama saatinden en geç 1 (bir) gün önce veya etkinlik günü başlamadan hemen önce nakit / havale yöntemiyle eksiksiz olarak tahsil edilecektir. Ödeme tamamlanmadan hizmet başlatılmaz.</p>
+            <p><strong>4.4.</strong> Etkinlik sırasında davetliler veya Müşteri tarafından mekan demirbaşlarına verilecek olası her türlü maddi zarardan sözleşme sahibi Müşteri doğrudan sorumludur ve hasar bedeli derhal tahsil edilir.</p>
+            <p><strong>4.5.</strong> Mücbir sebepler (Doğal afet, yasal kısıtlamalar vb.) dışında tarih değişikliği talepleri, firmanın uygunluk durumuna bağlı olup, firmaya en az 30 (otuz) gün önceden yazılı olarak bildirilmelidir.</p>
+            <p><strong>4.6.</strong> İşbu 4 ana maddeden ve alt bentlerden oluşan sözleşme, taraflarca okunarak karşılıklı imza altına alınmış olup ihtilaf halinde yerel mahkemeler yetkilidir.</p>
+        </div>
+
+        <!-- 5. İMZALAR (DİNAMİK) -->
+        <div class="signature-section">
+            @if (ciftVarMi)
+            {
+                <!-- GELİN, DAMAT VE YETKİLİ (3'LÜ İMZA) -->
+                <div class="row">
+                    <div class="col-4 sig-box">
+                        <div class="sig-line"></div>
+                        <div class="fw-bold">GELİN</div>
+                        <div class="mt-1" style="font-family:'Arial'; font-size:12px;">@gelinAd</div>
+                        <div class="mt-2" style="font-style:italic; font-size:11px; color:#555;">İmza</div>
+                    </div>
+                    <div class="col-4 sig-box">
+                        <div class="sig-line"></div>
+                        <div class="fw-bold">DAMAT</div>
+                        <div class="mt-1" style="font-family:'Arial'; font-size:12px;">@damatAd</div>
+                        <div class="mt-2" style="font-style:italic; font-size:11px; color:#555;">İmza</div>
+                    </div>
+                    <div class="col-4 sig-box">
+                        <div class="sig-line"></div>
+                        <div class="fw-bold">FİRMA YETKİLİSİ</div>
+                        <div class="mt-1" style="font-family:'Arial'; font-size:12px;">GÖKÇE PRIME YÖNETİMİ</div>
+                        <div class="mt-2" style="font-style:italic; font-size:11px; color:#555;">Kaşe / İmza</div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <!-- SADECE MÜŞTERİ VE YETKİLİ (2'Lİ İMZA) -->
+                <div class="row">
+                    <div class="col-6 sig-box">
+                        <div class="sig-line" style="width:60%;"></div>
+                        <div class="fw-bold">MÜŞTERİ (SÖZLEŞME SAHİBİ)</div>
+                        <div class="mt-1" style="font-family:'Arial'; font-size:12px;">@Model.Musteri.AdSoyad</div>
+                        <div class="mt-2" style="font-style:italic; font-size:11px; color:#555;">İmza</div>
+                    </div>
+                    <div class="col-6 sig-box">
+                        <div class="sig-line" style="width:60%;"></div>
+                        <div class="fw-bold">FİRMA YETKİLİSİ</div>
+                        <div class="mt-1" style="font-family:'Arial'; font-size:12px;">GÖKÇE PRIME YÖNETİMİ</div>
+                        <div class="mt-2" style="font-style:italic; font-size:11px; color:#555;">Kaşe / İmza</div>
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,254 @@
+﻿@model IEnumerable<DugunTakipSistemi.Models.Musteri>
+@{
+    ViewData["Title"] = "Müşteri Yönetimi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="text-primary fw-bold"><i class="fa-solid fa-users me-2"></i> Müşteri & Çift Kayıtları</h4>
+    <a href="#" class="btn btn-primary shadow-sm">
+        <i class="fa-solid fa-plus me-1"></i> Yeni Müşteri
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form asp-action="Index" method="get" class="mb-4">
+            <div class="input-group">
+                <span class="input-group-text bg-white text-muted border-end-0"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" name="aramaParametresi" value="@ViewBag.Arama" class="form-control border-start-0" placeholder="Müşteri adı veya telefon ile ara...">
+                <button type="submit" class="btn btn-primary px-4">Ara</button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light text-muted">
+                    <tr>
+                        <th>Müşteri / İletişim</th>
+                        <th>Çift Bilgisi</th>
+                        <th>Seçilen Mekan(lar)</th>
+                        <th class="text-end">Finans Özeti</th>
+                        <th class="text-center">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr><td colspan="5" class="text-center py-4 text-muted">Kayıtlı müşteri bulunamadı.</td></tr>
+                    }
+                    else
+                    {
+                        foreach (var musteri in Model)
+                        {
+                            decimal toplam = musteri.Rezervasyonlar?.Sum(r => r.ToplamUcret) ?? 0;
+                            decimal kapora = musteri.Rezervasyonlar?.Sum(r => r.AlinanKapora) ?? 0;
+                            decimal kalan = toplam - kapora;
+                            
+                            var mekanlar = musteri.Rezervasyonlar?.Select(r => r.Mekan?.MekanAdi).Where(m => !string.IsNullOrEmpty(m)).Distinct().ToList();
+                            string mekanText = mekanlar != null && mekanlar.Any() ? string.Join(", ", mekanlar) : "Mekan Atanmamış";
+
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-dark">@musteri.AdSoyad</div>
+                                    <small class="text-muted"><i class="fa-solid fa-phone me-1"></i> @musteri.Telefon</small>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(musteri.GelinAdSoyad) || !string.IsNullOrEmpty(musteri.DamatAdSoyad))
+                                    {
+                                        <div class="text-dark"><i class="fa-solid fa-heart text-danger me-1"></i> @musteri.GelinAdSoyad & @musteri.DamatAdSoyad</div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border"><i class="fa-solid fa-building me-1"></i> @mekanText</span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="fw-bold">Toplam: @toplam.ToString("N2") ₺</div>
+                                    <small class="@(kalan > 0 ? "text-danger" : "text-success fw-bold")">
+                                        Kalan: @(kalan > 0 ? kalan.ToString("N2") + " ₺" : "Ödendi")
+                                    </small>
+                                </td>
+                                <td class="text-center">
+                                    <!-- Buton sadece Modalı tetikler -->
+                                    <button type="button" class="btn btn-sm btn-primary text-white" data-bs-toggle="modal" data-bs-target="#modal-@musteri.Id">
+                                        Detay & Düzenle
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODALLAR TABLONUN TAMAMEN DIŞINA ALINDI -->
+@if (Model != null && Model.Any())
+{
+    foreach (var musteri in Model)
+    {
+        <!-- HER MÜŞTERİ İÇİN DÜZENLEME MODALI -->
+        <div class="modal fade" id="modal-@musteri.Id" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header border-0 bg-light">
+                        <h5 class="modal-title fw-bold text-primary">@musteri.AdSoyad - Detayları</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                    </div>
+                    <form asp-action="Guncelle" method="post">
+                        <input type="hidden" name="Id" value="@musteri.Id" />
+                        <div class="modal-body p-4">
+                            
+                            <!-- SEKMELER (TABS) -->
+                            <ul class="nav nav-tabs mb-4" id="tab-@musteri.Id" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                <button class="nav-link active fw-bold" data-bs-toggle="tab" data-bs-target="#genel-@musteri.Id" type="button" role="tab">Genel Bilgiler</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-bold" data-bs-toggle="tab" data-bs-target="#cift-@musteri.Id" type="button" role="tab">Gelin & Damat Bilgileri</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-bold" data-bs-toggle="tab" data-bs-target="#organizasyon-@musteri.Id" type="button" role="tab">Organizasyon Geçmişi</button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <!-- 1. SEKME: GENEL BİLGİLER -->
+                                <div class="tab-pane fade show active" id="genel-@musteri.Id" role="tabpanel">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-muted small">Müşteri / Temsilci Adı</label>
+                                            <input type="text" class="form-control" name="AdSoyad" value="@musteri.AdSoyad" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-muted small">İletişim No</label>
+                                            <input type="text" class="form-control" name="Telefon" value="@musteri.Telefon" required>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label text-muted small">E-Posta</label>
+                                            <input type="email" class="form-control" name="Email" value="@musteri.Email">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label text-muted small">Adres</label>
+                                            <textarea class="form-control" name="Adres" rows="2">@musteri.Adres</textarea>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label text-muted small">İşletme İçi Özel Notlar</label>
+                                            <textarea class="form-control bg-light" name="Notlar" rows="2">@musteri.Notlar</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. SEKME: GELİN & DAMAT -->
+                                <div class="tab-pane fade" id="cift-@musteri.Id" role="tabpanel">
+                                    <div class="row g-3">
+                                        <!-- Gelin Kısmı -->
+                                        <div class="col-md-6 border-end">
+                                            <h6 class="text-danger fw-bold"><i class="fa-solid fa-person-dress me-2"></i>Gelin Bilgileri</h6>
+                                            <div class="mb-2">
+                                                <label class="form-label text-muted small">Ad Soyad</label>
+                                                <input type="text" class="form-control" name="GelinAdSoyad" value="@musteri.GelinAdSoyad">
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label text-muted small">TC Kimlik No</label>
+                                                <input type="text" class="form-control" name="GelinTC" value="@musteri.GelinTC" maxlength="11">
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label text-muted small">Kendi Telefonu</label>
+                                                <input type="text" class="form-control" name="GelinTelefon" value="@musteri.GelinTelefon">
+                                            </div>
+                                        </div>
+                                        <!-- Damat Kısmı -->
+                                        <div class="col-md-6">
+                                            <h6 class="text-primary fw-bold"><i class="fa-solid fa-person me-2"></i>Damat Bilgileri</h6>
+                                            <div class="mb-2">
+                                                <label class="form-label text-muted small">Ad Soyad</label>
+                                                <input type="text" class="form-control" name="DamatAdSoyad" value="@musteri.DamatAdSoyad">
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label text-muted small">TC Kimlik No</label>
+                                                <input type="text" class="form-control" name="DamatTC" value="@musteri.DamatTC" maxlength="11">
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label text-muted small">Kendi Telefonu</label>
+                                                <input type="text" class="form-control" name="DamatTelefon" value="@musteri.DamatTelefon">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 3. SEKME: ORGANİZASYON GEÇMİŞİ VE YÖNET BUTONU -->
+                                <div class="tab-pane fade" id="organizasyon-@musteri.Id" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-bordered align-middle">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th>Tarih</th>
+                                                    <th>Mekan</th>
+                                                    <th>Toplam</th>
+                                                    <th>Kapora</th>
+                                                    <th>Kalan</th>
+                                                    <th class="text-center">İşlem</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(musteri.Rezervasyonlar != null && musteri.Rezervasyonlar.Any())
+                                                {
+                                                    foreach(var rez in musteri.Rezervasyonlar)
+                                                    {
+                                                        <tr>
+                                                            <td>@rez.BaslangicTarihi.ToString("dd.MM.yyyy")</td>
+                                                            <td>@(rez.Mekan != null ? rez.Mekan.MekanAdi : "-")</td>
+                                                            <td>@rez.ToplamUcret.ToString("N2") ₺</td>
+                                                            <td class="text-success">@rez.AlinanKapora.ToString("N2") ₺</td>
+                                                            <td class="text-danger fw-bold">@((rez.ToplamUcret - rez.AlinanKapora).ToString("N2")) ₺</td>
+                                                            <td class="text-center">
+                                                                <a href="/Rezervasyon/Index?seciliRezId=@rez.Id" class="btn btn-sm btn-outline-primary" title="Takvimde ve Detayda Yönet">
+                                                                    <i class="fa-solid fa-calendar-check me-1"></i> Yönet
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr><td colspan="6" class="text-muted text-center">Henüz bir organizasyon kaydı yok.</td></tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 bg-light d-flex justify-content-between">
+                            <button type="submit" asp-action="Sil" asp-route-id="@musteri.Id" class="btn btn-outline-danger" onclick="return confirm('Müşteriyi ve ona ait rezervasyonları tamamen silmek istediğinize emin misiniz?');">
+                                <i class="fa-solid fa-trash me-1"></i> Sil
+                            </button>
+                            <div>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check me-1"></i> Değişiklikleri Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var seciliMusteriId = '@ViewBag.SeciliMusteriId';
+            if (seciliMusteriId && seciliMusteriId !== '') {
+                var modalId = '#modal-' + seciliMusteriId;
+                var myModal = new bootstrap.Modal(document.querySelector(modalId));
+                myModal.show();
+            }
+        });
+    </script>
+}

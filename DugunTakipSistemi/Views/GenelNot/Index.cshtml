@@ -1,0 +1,107 @@
+﻿@model IEnumerable<DugunTakipSistemi.Models.GenelNot>
+@{
+    ViewData["Title"] = "Notlarım";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="text-primary fw-bold"><i class="fa-solid fa-sticky-note me-2"></i> Tüm Notlar</h4>
+    <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#notEkleModal">
+        <i class="fa-solid fa-plus"></i> Yeni Not Ekle
+    </button>
+</div>
+
+<div class="row">
+    @if (!Model.Any())
+    {
+        <div class="col-12">
+            <div class="alert alert-light border shadow-sm text-muted">
+                <i class="fa-solid fa-circle-info me-2"></i> Henüz hiç not eklenmemiş. Sağ üstteki butonu veya sol menüyü kullanarak not ekleyebilirsiniz.
+            </div>
+        </div>
+    }
+    else
+    {
+        foreach (var not in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100 border-0 border-start border-warning border-4">
+                    <div class="card-body">
+                        <p class="card-text text-dark" id="note-icerik-@not.Id" style="white-space: pre-wrap;">@not.Icerik</p>
+                    </div>
+                    <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fa-regular fa-clock me-1"></i> @not.OlusturulmaTarihi.ToString("dd.MM.yyyy HH:mm")
+                        </small>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-primary border-0 me-1 edit-note-btn"
+                                    data-id="@not.Id" data-bs-toggle="modal" data-bs-target="#notDuzenleModal" title="Düzenle">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <form asp-action="Sil" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@not.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="Sil" onclick="return confirm('Bu notu silmek istediğinize emin misiniz?');">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<div class="modal fade" id="notEkleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-primary"><i class="fa-solid fa-pen-to-square me-2"></i>Yeni Not Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <form asp-action="Ekle" method="post">
+                <div class="modal-body">
+                    <textarea name="icerik" class="form-control" rows="5" placeholder="Notunuzu buraya yazın..." required></textarea>
+                </div>
+                <div class="modal-footer border-0 bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="notDuzenleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-primary"><i class="fa-solid fa-pen me-2"></i>Notu Düzenle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <form asp-action="Guncelle" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="duzenleNotId" name="id" />
+                    <textarea id="duzenleNotIcerik" name="icerik" class="form-control" rows="5" required></textarea>
+                </div>
+                <div class="modal-footer border-0 bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.edit-note-btn').click(function () {
+                var notId = $(this).data('id');
+                var mevcutIcerik = $('#note-icerik-' + notId).text();
+
+                $('#duzenleNotId').val(notId);
+                $('#duzenleNotIcerik').val(mevcutIcerik);
+            });
+        });
+    </script>
+}

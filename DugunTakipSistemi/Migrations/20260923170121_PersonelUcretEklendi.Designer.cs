@@ -4,6 +4,7 @@ using DugunTakipSistemi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DugunTakipSistemi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260923170121_PersonelUcretEklendi")]
+    partial class PersonelUcretEklendi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,41 +24,6 @@ namespace DugunTakipSistemi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("DugunTakipSistemi.Models.FinansHareket", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Aciklama")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MuhatapIsim")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MusteriId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Tarih")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Tur")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Tutar")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MusteriId");
-
-                    b.ToTable("FinansHareketler");
-                });
 
             modelBuilder.Entity("DugunTakipSistemi.Models.GenelNot", b =>
                 {
@@ -305,32 +273,6 @@ namespace DugunTakipSistemi.Migrations
                     b.ToTable("Rezervasyonlar");
                 });
 
-            modelBuilder.Entity("DugunTakipSistemi.Models.Tedarikci", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Ad")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Bakiye")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Sektor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Telefon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tedarikciler");
-                });
-
             modelBuilder.Entity("PersonelRezervasyon", b =>
                 {
                     b.Property<int>("PersonellerId")
@@ -344,15 +286,6 @@ namespace DugunTakipSistemi.Migrations
                     b.HasIndex("RezervasyonlarId");
 
                     b.ToTable("PersonelRezervasyon");
-                });
-
-            modelBuilder.Entity("DugunTakipSistemi.Models.FinansHareket", b =>
-                {
-                    b.HasOne("DugunTakipSistemi.Models.Musteri", "Musteri")
-                        .WithMany()
-                        .HasForeignKey("MusteriId");
-
-                    b.Navigation("Musteri");
                 });
 
             modelBuilder.Entity("DugunTakipSistemi.Models.Odeme", b =>
