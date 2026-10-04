@@ -1,226 +1,529 @@
 ﻿@{
     ViewData["Title"] = "Finans Paneli";
+    int buYil = DateTime.Today.Year;
+    int buAy = DateTime.Today.Month;
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
 <style>
     :root {
-        --koyu-gri: #2c3e50;
-        --acik-gri: #f6f5f3;
-        --pastel-hardal: #d19a3b;
-        --border-renk: #e0e0e0;
-        --text-koyu: #333;
-        --text-acik: #6c757d;
+        --kurumsal-lacivert: #1e293b;
+        --kurumsal-gri: #64748b;
+        --arkaplan: #f8fafc;
+        --border-renk: #e2e8f0;
     }
 
-    body { background-color: var(--acik-gri); font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; color: var(--text-koyu); }
-    
-    .top-menu-btn { background-color: transparent; border: 1px solid #dcdacb; color: var(--text-acik); border-radius: 20px; padding: 6px 16px; font-size: 0.85rem; font-weight: 600; margin-right: 8px; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; }
-    .top-menu-btn:hover { background-color: #eae8d8; color: #333; }
-    .top-menu-btn.active { background-color: var(--pastel-hardal); color: #fff; border-color: var(--pastel-hardal); }
+    body {
+        background-color: var(--arkaplan);
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        color: #1e293b;
+    }
 
-    .action-btn { border-radius: 6px; padding: 6px 14px; font-size: 0.85rem; font-weight: 600; border: none; margin-right: 6px; color: white; display: inline-flex; align-items: center; }
-    .btn-green { background-color: #198754; } 
-    .btn-red { background-color: #dc3545; } 
-    .btn-orange { background-color: #fd7e14; }
+    .corp-btn {
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid transparent;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
 
-    .stat-card { background: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; border: 1px solid var(--border-renk); }
-    .stat-title { font-size: 0.75rem; color: #888; font-weight: 600; margin-bottom: 5px; } 
-    .stat-value { font-size: 1.3rem; font-weight: 800; margin: 0; }
-    .stat-icon { position: absolute; right: 15px; top: 15px; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
-    
-    .summary-panel { background: #fff; border-radius: 8px; border: 1px solid var(--border-renk); padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-    .summary-box { padding: 15px; border-radius: 8px; text-align: center; }
-    .bg-light-green { background-color: #e8f5e9; } .bg-light-red { background-color: #ffebee; } .bg-light-purple { background-color: #f3e5f5; }
-    .summary-box-title { font-size: 0.85rem; color: #555; font-weight: 600; margin-bottom: 5px; } .summary-box-value { font-size: 1.1rem; font-weight: 800; margin: 0; }
+    .corp-btn-primary {
+        background-color: #1e293b;
+        color: #fff;
+    }
 
-    .transactions-panel { background: #fff; border-radius: 8px; border: 1px solid var(--border-renk); box-shadow: 0 2px 6px rgba(0,0,0,0.02); margin-top: 20px; }
-    .transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px dashed #eee; }
-    .transaction-item:last-child { border-bottom: none; }
-    .t-title { font-weight: 600; color: #333; font-size: 0.9rem; } .t-date { font-size: 0.75rem; color: #999; margin-top: 2px; }
-    .t-amount { font-weight: 800; font-size: 1rem; } .t-amount.positive { color: #198754; } .t-amount.negative { color: #dc3545; }
-    .btn-delete-trans { border: none; background: transparent; color: #ccc; transition: 0.2s; } .btn-delete-trans:hover { color: #dc3545; }
+        .corp-btn-primary:hover {
+            background-color: #0f172a;
+            color: #fff;
+        }
+
+    .corp-btn-success {
+        background-color: #15803d;
+        color: #fff;
+    }
+
+        .corp-btn-success:hover {
+            background-color: #166534;
+            color: #fff;
+        }
+
+    .corp-btn-danger {
+        background-color: #b91c1c;
+        color: #fff;
+    }
+
+        .corp-btn-danger:hover {
+            background-color: #991b1b;
+            color: #fff;
+        }
+
+    .corp-btn-outline {
+        background-color: #fff;
+        border-color: #cbd5e1;
+        color: #334155;
+    }
+
+        .corp-btn-outline:hover {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 16px 18px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        border: 1px solid var(--border-renk);
+        position: relative;
+        height: 100%;
+    }
+
+    .stat-title {
+        font-size: 0.75rem;
+        color: var(--kurumsal-gri);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-bottom: 6px;
+    }
+
+    .stat-value {
+        font-size: 1.35rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .stat-icon {
+        position: absolute;
+        right: 16px;
+        top: 16px;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+
+    .panel-box {
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid var(--border-renk);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        overflow: hidden;
+    }
+
+    .panel-header {
+        background: #fff;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border-renk);
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--kurumsal-lacivert);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .summary-box {
+        padding: 16px;
+        border-radius: 8px;
+        text-align: center;
+        border: 1px solid transparent;
+    }
+
+        .summary-box.income {
+            background-color: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .summary-box.expense {
+            background-color: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .summary-box.net {
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+    .summary-box-title {
+        font-size: 0.8rem;
+        color: #475569;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+
+    .summary-box-value {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .data-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 13px 20px;
+        border-bottom: 1px solid #f1f5f9;
+        transition: background 0.15s;
+    }
+
+        .data-row:hover {
+            background-color: #f8fafc;
+        }
+
+        .data-row:last-child {
+            border-bottom: none;
+        }
+
+    .r-title {
+        font-weight: 600;
+        color: #1e293b;
+        font-size: 0.9rem;
+    }
+
+    .r-sub {
+        font-size: 0.78rem;
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    .r-amount {
+        font-weight: 800;
+        font-size: 0.98rem;
+    }
+
+    .modal-corp-header {
+        background-color: #1e293b;
+        color: #fff;
+        padding: 14px 20px;
+    }
+
+    .form-label-corp {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 4px;
+    }
 </style>
 
 <div class="container-fluid py-3">
-    
-    <!-- Üst Başlık ve Sekmeler -->
-    <div class="d-flex align-items-center mb-4">
-        <h4 class="fw-bold mb-0 me-4 text-dark"><i class="fa-regular fa-folder-open me-2"></i> Finans</h4>
-        <div class="d-flex">
-            <a href="#ozetAlani" class="top-menu-btn active"><i class="fa-solid fa-chart-pie me-2"></i> Özet</a>
-            <a href="#alacaklarAlani" class="top-menu-btn"><i class="fa-solid fa-money-bill-wave me-2"></i> Alacaklarım</a>
-            <a href="#cariAlani" class="top-menu-btn"><i class="fa-solid fa-users me-2"></i> Müşteri & Tedarikçi Carileri</a>
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 pb-2 border-bottom">
+        <div>
+            <h4 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-building-columns me-2 text-secondary"></i> Finans ve Muhasebe Yönetimi</h4>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button class="corp-btn corp-btn-success shadow-sm" onclick="odemeAlModalAc()"><i class="fa-solid fa-hand-holding-dollar"></i> Müşteriden Ödeme Al</button>
+            <button class="corp-btn corp-btn-danger shadow-sm" onclick="islemModalAc('Gider')"><i class="fa-solid fa-file-invoice"></i> Gider Kaydı Ekle</button>
+            <button class="corp-btn corp-btn-primary shadow-sm" onclick="islemModalAc('Ek Gelir')"><i class="fa-solid fa-plus"></i> Ek Gelir Kaydı</button>
+            <button class="corp-btn corp-btn-outline shadow-sm" onclick="islemModalAc('Manuel Alacak')"><i class="fa-solid fa-file-contract"></i> Dış Alacak / Borçlu Ekle</button>
+            <button class="corp-btn corp-btn-outline shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTedarikciEkle"><i class="fa-solid fa-truck-field"></i> Yeni Tedarikçi</button>
         </div>
     </div>
 
-    <!-- Aksiyon Butonları -->
-    <div class="mb-4">
-        <button class="action-btn btn-green shadow-sm" data-bs-toggle="modal" data-bs-target="#modalOdemeAl"><i class="fa-solid fa-plus-circle me-1"></i> Ödeme Al</button>
-        <button class="action-btn btn-red shadow-sm" onclick="islemModalAc('Gider')"><i class="fa-solid fa-minus-circle me-1"></i> Gider Ekle</button>
-        <button class="action-btn btn-green shadow-sm" onclick="islemModalAc('Ek Gelir')"><i class="fa-solid fa-plus me-1"></i> Ek Gelir Ekle</button>
-        <button class="action-btn btn-orange shadow-sm" onclick="islemModalAc('Manuel Alacak')"><i class="fa-solid fa-handshake me-1"></i> Yeni Borç/Alacak Ekle</button>
-        <button class="action-btn btn-orange shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTedarikciEkle"><i class="fa-solid fa-truck-fast me-1"></i> Yeni Tedarikçi</button>
-    </div>
-
-    <!-- 5'Lİ İNCE KARTLAR -->
-    <div class="row g-3 mb-4" id="ozetAlani">
+    <!-- 1. ÖZET KARTLARI -->
+    <div class="row g-3 mb-4">
         <div class="col-md">
-            <div class="stat-card" style="border-left: 4px solid #6f42c1;">
-                <div class="stat-title">Toplam İşlem</div>
+            <div class="stat-card" style="border-left: 4px solid #334155;">
+                <div class="stat-title">Toplam Organizasyon</div>
                 <div class="stat-value text-dark">@ViewBag.ToplamRezervasyon</div>
-                <div class="stat-icon" style="background:#f3e5f5; color:#6f42c1;"><i class="fa-solid fa-bookmark"></i></div>
+                <div class="stat-icon" style="background:#f1f5f9; color:#334155;"><i class="fa-solid fa-calendar-check"></i></div>
             </div>
         </div>
         <div class="col-md">
-            <div class="stat-card" style="border-left: 4px solid #198754;">
-                <div class="stat-title">Toplam Gelir</div>
+            <div class="stat-card" style="border-left: 4px solid #15803d;">
+                <div class="stat-title">Kasaya Giren Toplam Gelir</div>
                 <div class="stat-value text-success">@((ViewBag.ToplamGelir ?? 0).ToString("N2")) TL</div>
-                <div class="stat-icon" style="background:#e8f5e9; color:#198754;"><i class="fa-solid fa-arrow-down"></i></div>
+                <div class="stat-icon" style="background:#dcfce7; color:#15803d;"><i class="fa-solid fa-arrow-trend-up"></i></div>
             </div>
         </div>
         <div class="col-md">
-            <div class="stat-card" style="border-left: 4px solid #0dcaf0;">
+            <div class="stat-card" style="border-left: 4px solid #0284c7;">
                 <div class="stat-title">Bekleyen Alacaklar</div>
-                <div class="stat-value text-info">@((ViewBag.BekleyenOdemeler ?? 0).ToString("N2")) TL</div>
-                <div class="stat-icon" style="background:#e0f7fa; color:#0dcaf0;"><i class="fa-solid fa-hourglass-half"></i></div>
+                <div class="stat-value" style="color:#0284c7;">@((ViewBag.BekleyenOdemeler ?? 0).ToString("N2")) TL</div>
+                <div class="stat-icon" style="background:#e0f2fe; color:#0284c7;"><i class="fa-solid fa-hourglass-half"></i></div>
             </div>
         </div>
         <div class="col-md">
-            <div class="stat-card" style="border-left: 4px solid #dc3545;">
+            <div class="stat-card" style="border-left: 4px solid #b91c1c;">
                 <div class="stat-title">Toplam Gider</div>
                 <div class="stat-value text-danger">@((ViewBag.ToplamGider ?? 0).ToString("N2")) TL</div>
-                <div class="stat-icon" style="background:#ffebee; color:#dc3545;"><i class="fa-solid fa-arrow-up"></i></div>
+                <div class="stat-icon" style="background:#fee2e2; color:#b91c1c;"><i class="fa-solid fa-arrow-trend-down"></i></div>
             </div>
         </div>
         <div class="col-md">
-            <div class="stat-card" style="border-left: 4px solid #6f42c1;">
-                <div class="stat-title">Net Kâr</div>
+            <div class="stat-card" style="border-left: 4px solid #1e293b;">
+                <div class="stat-title">Net Kasa (Kâr)</div>
                 <div class="stat-value @(ViewBag.NetKar >= 0 ? "text-success" : "text-danger")">@((ViewBag.NetKar ?? 0).ToString("N2")) TL</div>
-                <div class="stat-icon" style="background:#f3e5f5; color:#6f42c1;"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="stat-icon" style="background:#f1f5f9; color:#1e293b;"><i class="fa-solid fa-scale-balanced"></i></div>
             </div>
         </div>
     </div>
 
-    <!-- DÖNEM ÖZETİ VE ALACAKLARIM (Yan Yana) -->
-    <div class="row g-4 mb-4" id="alacaklarAlani">
-        <div class="col-md-6">
-            <div class="summary-panel h-100">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="fw-bold m-0"><i class="fa-solid fa-calendar-days me-2"></i> Dönem Özeti</h6>
-                    <div class="btn-group btn-group-sm shadow-sm" role="group">
-                        <button type="button" class="btn btn-outline-secondary donem-btn" onclick="donemGetir('Gunluk', this)">Günlük</button>
-                        <button type="button" class="btn btn-secondary text-white fw-bold donem-btn active" style="background-color: #6f42c1; border-color:#6f42c1;" onclick="donemGetir('Aylik', this)">Aylık</button>
-                        <button type="button" class="btn btn-outline-secondary donem-btn" onclick="donemGetir('Yillik', this)">Yıllık</button>
+    <!-- 2. DÖNEM ÖZETİ VE BEKLEYEN ALACAKLAR -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="panel-box h-100 d-flex flex-column justify-content-between">
+                <div class="panel-header flex-wrap gap-2">
+                    <span><i class="fa-solid fa-calendar-days me-2 text-secondary"></i> Dönem Özeti</span>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="date" id="filtreGun" class="form-control form-control-sm" style="width: 135px; display:none;" onchange="donemYenile()">
+
+                        <select id="filtreAy" class="form-select form-select-sm" style="width: 110px;" onchange="donemYenile()">
+                            <!option value="1" @(buAy == 1 ? "selected" : "")>Ocak</!option>
+                            <!option value="2" @(buAy == 2 ? "selected" : "")>Şubat</!option>
+                            <!option value="3" @(buAy == 3 ? "selected" : "")>Mart</!option>
+                            <!option value="4" @(buAy == 4 ? "selected" : "")>Nisan</!option>
+                            <!option value="5" @(buAy == 5 ? "selected" : "")>Mayıs</!option>
+                            <!option value="6" @(buAy == 6 ? "selected" : "")>Haziran</!option>
+                            <!option value="7" @(buAy == 7 ? "selected" : "")>Temmuz</!option>
+                            <!option value="8" @(buAy == 8 ? "selected" : "")>Ağustos</!option>
+                            <!option value="9" @(buAy == 9 ? "selected" : "")>Eylül</!option>
+                            <!option value="10" @(buAy == 10 ? "selected" : "")>Ekim</!option>
+                            <!option value="11" @(buAy == 11 ? "selected" : "")>Kasım</!option>
+                            <!option value="12" @(buAy == 12 ? "selected" : "")>Aralık</!option>
+                        </select>
+
+                        <select id="filtreYil" class="form-select form-select-sm" style="width: 85px;" onchange="donemYenile()">
+                            @for (int y = buYil - 2; y <= buYil + 1; y++)
+                            {
+                                <!option value="@y" @(y == buYil ? "selected" : "")>@y</!option>
+                            }
+                        </select>
+
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-outline-secondary donem-btn" onclick="donemTipDegistir('Gunluk', this)">Günlük</button>
+                            <button type="button" class="btn btn-dark donem-btn active" onclick="donemTipDegistir('Aylik', this)">Aylık</button>
+                            <button type="button" class="btn btn-outline-secondary donem-btn" onclick="donemTipDegistir('Yillik', this)">Yıllık</button>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="row g-3 mb-3 mt-3">
-                    <div class="col-md-4"><div class="summary-box bg-light-green"><div class="summary-box-title">Gelir</div><div class="summary-box-value text-success" id="ozetGelir">...</div></div></div>
-                    <div class="col-md-4"><div class="summary-box bg-light-red"><div class="summary-box-title">Gider</div><div class="summary-box-value text-danger" id="ozetGider">...</div></div></div>
-                    <div class="col-md-4"><div class="summary-box bg-light-purple"><div class="summary-box-title">Net</div><div class="summary-box-value" id="ozetNet">...</div></div></div>
-                </div>
-            </div>
-        </div>
 
-        <!-- ALACAKLARIM (Müşteriler + Manuel Eklenenler) -->
-        <div class="col-md-6">
-            <div class="summary-panel h-100 p-0" style="overflow-y: auto; max-height: 220px;">
-                <div class="bg-white border-bottom p-3 fw-bold sticky-top">
-                    <i class="fa-solid fa-hand-holding-dollar text-primary me-2"></i> Alacaklarım (Bekleyen Tahsilatlar)
-                </div>
-                <div class="card-body p-0">
-                    @if(ViewBag.MusteriCarileri != null) { foreach (var b in ViewBag.MusteriCarileri) { if(b.Kalan > 0) {
-                        <div class="transaction-item">
-                            <div><div class="t-title">@b.Musteri.AdSoyad</div><div class="t-date">Müşteri Cari Alacağı</div></div>
-                            <div class="t-amount positive">@b.Kalan.ToString("N2") ₺</div>
-                        </div>
-                    }}}
-                    @if(ViewBag.ManuelAlacaklar != null) { foreach (var a in ViewBag.ManuelAlacaklar) {
-                        <div class="transaction-item">
-                            <div><div class="t-title">@(a.MusteriId != null ? a.Musteri.AdSoyad : a.MuhatapIsim)</div><div class="t-date">@a.Aciklama</div></div>
-                            <div class="d-flex align-items-center">
-                                <div class="t-amount positive me-3">@a.Tutar.ToString("N2") ₺</div>
-                                <button class="btn-delete-trans" onclick="hareketSil(@a.Id, false)"><i class="fa-solid fa-trash"></i></button>
+                <div class="p-4">
+                    <div class="text-muted small fw-bold mb-3" id="seciliDonemBaslik">...</div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="summary-box income">
+                                <div class="summary-box-title">Dönem Geliri</div>
+                                <div class="summary-box-value text-success" id="ozetGelir">0,00 TL</div>
                             </div>
                         </div>
-                    }}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CARİLER (Müşteri Carileri ve Tedarikçi Carileri Alt Alta) -->
-    <div class="row g-4 mb-4" id="cariAlani">
-        <!-- MÜŞTERİ CARİLERİ -->
-        <div class="col-md-6">
-            <div class="summary-panel h-100 p-0" style="overflow-y: auto; max-height: 250px;">
-                <div class="bg-white border-bottom p-3 fw-bold sticky-top"><i class="fa-solid fa-users text-dark me-2"></i> Müşteri Cari Hesapları</div>
-                <div class="card-body p-0">
-                    @if(ViewBag.MusteriCarileri != null) { foreach (var c in ViewBag.MusteriCarileri) {
-                        <div class="transaction-item">
-                            <div><div class="t-title">@c.Musteri.AdSoyad</div><div class="t-date">Toplam İşlem: @c.ToplamIslem.ToString("N0") ₺</div></div>
-                            <div class="t-amount @(c.Kalan > 0 ? "negative" : "positive")">@c.Kalan.ToString("N2") ₺</div>
-                        </div>
-                    }}
-                </div>
-            </div>
-        </div>
-
-        <!-- TEDARİKÇİ CARİLERİ (Borçlarımız) -->
-        <div class="col-md-6">
-            <div class="summary-panel h-100 p-0" style="overflow-y: auto; max-height: 250px;">
-                <div class="bg-white border-bottom p-3 fw-bold sticky-top d-flex justify-content-between align-items-center">
-                    <span><i class="fa-solid fa-truck-fast text-warning me-2"></i> Tedarikçi Carileri (Borçlarımız)</span>
-                    <button class="btn btn-sm btn-outline-dark py-0 px-2" data-bs-toggle="modal" data-bs-target="#modalTedarikciEkle">+ Tedarikçi Ekle</button>
-                </div>
-                <div class="card-body p-0">
-                    @if(ViewBag.Tedarikciler != null) { foreach (var t in ViewBag.Tedarikciler) {
-                        <div class="transaction-item">
-                            <div><div class="t-title">@t.Ad</div><div class="t-date">@t.Sektor | @t.Telefon</div></div>
-                            <div class="d-flex align-items-center">
-                                <div class="t-amount negative me-3">@t.Bakiye.ToString("N2") ₺</div>
-                                <button class="btn btn-sm btn-outline-success py-0 px-2" onclick="tedarikciOdemeAc(@t.Id, '@t.Ad')">Ödeme Yap</button>
+                        <div class="col-md-4">
+                            <div class="summary-box expense">
+                                <div class="summary-box-title">Dönem Gideri</div>
+                                <div class="summary-box-value text-danger" id="ozetGider">0,00 TL</div>
                             </div>
                         </div>
-                    }}
+                        <div class="col-md-4">
+                            <div class="summary-box net">
+                                <div class="summary-box-title">Dönem Net</div>
+                                <div class="summary-box-value" id="ozetNet">0,00 TL</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-4 py-3 bg-light border-top d-flex justify-content-between align-items-center">
+                    <span class="text-muted small"><i class="fa-solid fa-circle-info me-1"></i> Seçili dönemde <strong id="donemIslemSayisi">0</strong> kasa hareketi bulunuyor.</span>
+                    <button class="btn btn-sm btn-outline-dark fw-semibold" onclick="$('#modalDonemHareketleri').modal('show')">
+                        <i class="fa-solid fa-list-check me-1"></i> Dönem Hareketlerini Gör
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- ALT KISIM: SON HAREKETLER -->
-    <div class="row">
-        <div class="col-12">
-            <div class="transactions-panel">
-                <div class="p-3 border-bottom bg-light d-flex align-items-center" style="border-radius: 8px 8px 0 0;">
-                    <i class="fa-solid fa-chart-line me-2 text-primary"></i> <span class="fw-bold text-dark">Son Hareketler (Kasa & Gider Geçmişi)</span>
+        <div class="col-lg-6">
+            <div class="panel-box h-100">
+                <div class="panel-header">
+                    <span><i class="fa-solid fa-hand-holding-dollar text-primary me-2"></i> Bekleyen Alacaklar</span>
+                    <span class="badge bg-primary rounded-pill">Toplam: @((ViewBag.BekleyenOdemeler ?? 0).ToString("N2")) ₺</span>
                 </div>
-                
-                <div class="list-group list-group-flush">
-                    @if(ViewBag.SonHareketler != null)
+                <div style="overflow-y: auto; max-height: 250px;">
+                    @{
+                        bool alacakVar = false;
+                    }
+                    @if (ViewBag.MusteriBorclari != null)
                     {
-                        foreach (var islem in ViewBag.SonHareketler)
+                        foreach (var b in ViewBag.MusteriBorclari)
                         {
-                            <div class="transaction-item">
-                                <div class="d-flex align-items-center">
-                                    <div class="t-icon @(islem.IsPositive ? "income" : "")" style="width:30px; height:30px; background:@(islem.IsPositive ? "#e8f5e9" : "#ffebee"); color:@(islem.IsPositive ? "#198754" : "#dc3545"); border-radius:6px; display:flex; align-items:center; justify-content:center; margin-right:15px;">
-                                        <i class="fa-solid @(islem.IsPositive ? "fa-arrow-right" : "fa-arrow-left")"></i>
-                                    </div>
+                            if (b.Kalan > 0)
+                            {
+                                alacakVar = true;
+                                <div class="data-row">
                                     <div>
-                                        <div class="t-title">@islem.Aciklama <span class="badge" style="background:@(islem.IsPositive ? "#e8f5e9; color:#198754;" : "#ffebee; color:#dc3545;"); font-size:0.65rem; margin-left:8px;">@islem.Tur</span></div>
-                                        <div class="t-date">@islem.Tarih.ToString("dd.MM.yyyy HH:mm")</div>
+                                        <div class="r-title">@b.GorunenIsim <span class="badge bg-light text-dark border ms-1">Organizasyon Borcu</span></div>
+                                        <div class="r-sub">Toplam: <strong>@b.ToplamBorc.ToString("N0") ₺</strong> | Ödenen: <span class="text-success">@b.Odenen.ToString("N0") ₺</span></div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="text-end">
+                                            <div class="small text-muted" style="font-size:0.7rem;">KALAN ALACAK</div>
+                                            <div class="r-amount text-danger">@b.Kalan.ToString("N2") ₺</div>
+                                        </div>
+                                        <button class="btn btn-sm btn-success fw-semibold" onclick="hizliOdemeAl(@b.MusteriId, @b.Kalan.ToString(System.Globalization.CultureInfo.InvariantCulture))">Tahsil Et</button>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="t-amount @(islem.IsPositive ? "positive" : "negative") me-3">
-                                        @(islem.IsPositive ? "+" : "-") @islem.Tutar.ToString("N2") TL
+                            }
+                        }
+                    }
+                    @if (ViewBag.ManuelAlacaklar != null)
+                    {
+                        foreach (var a in ViewBag.ManuelAlacaklar)
+                        {
+                            alacakVar = true;
+                            string kIsim = a.MusteriId != null && a.Musteri != null ? a.Musteri.AdSoyad : a.MuhatapIsim;
+                            <div class="data-row">
+                                <div>
+                                    <div class="r-title">@kIsim <span class="badge bg-warning text-dark ms-1">Dış Alacak</span></div>
+                                    <div class="r-sub">@a.Aciklama — @a.Tarih.ToString("dd.MM.yyyy")</div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="text-end me-2">
+                                        <div class="small text-muted" style="font-size:0.7rem;">ALACAK TUTARI</div>
+                                        <div class="r-amount text-danger">@a.Tutar.ToString("N2") ₺</div>
                                     </div>
-                                    <button class="btn-delete-trans" onclick="hareketSil(@islem.Id, @(islem.IsMusteri.ToString().ToLower()))" title="Sil"><i class="fa-solid fa-trash"></i></button>
+                                    <button class="btn btn-sm btn-success fw-semibold" onclick="manuelAlacakTahsilModal(@a.Id, '@kIsim', @a.Tutar.ToString(System.Globalization.CultureInfo.InvariantCulture))">Tahsil Et</button>
+                                    <button class="btn btn-sm btn-light border text-danger" onclick="hareketSil(@a.Id, false)" title="Kaydı Sil"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                             </div>
                         }
+                    }
+                    @if (!alacakVar)
+                    {
+                        <div class="p-4 text-center text-muted small">Bekleyen herhangi bir alacak kaydı bulunmuyor.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MÜŞTERİDEN ALINACAK BORÇLAR & TEDARİKÇİ BORÇLARIMIZ -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="panel-box h-100">
+                <div class="panel-header" style="cursor: pointer;" onclick="tamEkranBorclularAc()">
+                    <span><i class="fa-solid fa-users text-dark me-2"></i> Müşteriden Alınacak Borçlar</span>
+                    <button type="button" class="btn btn-sm btn-outline-dark fw-semibold py-1 px-3" onclick="event.stopPropagation(); tamEkranBorclularAc();">
+                        <i class="fa-solid fa-expand me-1"></i> Tam Ekran
+                    </button>
+                </div>
+                <div style="overflow-y: auto; max-height: 260px;">
+                    @if (ViewBag.MusteriBorclari != null)
+                    {
+                        foreach (var c in ViewBag.MusteriBorclari)
+                        {
+                            <div class="data-row">
+                                <div>
+                                    <div class="r-title">@c.GorunenIsim</div>
+                                    <div class="r-sub">Toplam Tutar: @c.ToplamBorc.ToString("N0") ₺ | Tahsil Edilen: @c.Odenen.ToString("N0") ₺</div>
+                                </div>
+                                <div class="text-end">
+                                    @if (c.Kalan > 0)
+                                    {
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">Kalan Borç: @c.Kalan.ToString("N2") ₺</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1"><i class="fa-solid fa-check me-1"></i> Ödendi</span>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="panel-box h-100">
+                <div class="panel-header">
+                    <span><i class="fa-solid fa-truck-fast text-warning me-2"></i> Tedarikçi Borçlarımız</span>
+                    <button class="btn btn-sm btn-outline-dark py-1 px-2" data-bs-toggle="modal" data-bs-target="#modalTedarikciEkle">+ Yeni Tedarikçi</button>
+                </div>
+                <div style="overflow-y: auto; max-height: 260px;">
+                    @if (ViewBag.Tedarikciler != null && ((IEnumerable<dynamic>)ViewBag.Tedarikciler).Any())
+                    {
+                        foreach (var t in ViewBag.Tedarikciler)
+                        {
+                            <div class="data-row">
+                                <div>
+                                    <div class="r-title">@t.Ad</div>
+                                    <div class="r-sub">Kategori: @(string.IsNullOrEmpty(t.Sektor) ? "-" : t.Sektor) @(string.IsNullOrEmpty(t.Telefon) ? "" : "| Tel: " + t.Telefon)</div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="text-end me-2">
+                                        <div class="small text-muted" style="font-size:0.7rem;">KALAN BORCUMUZ</div>
+                                        <div class="r-amount @(t.Bakiye > 0 ? "text-danger" : "text-success")">@t.Bakiye.ToString("N2") ₺</div>
+                                    </div>
+                                    @if (t.Bakiye > 0)
+                                    {
+                                        <button class="btn btn-sm btn-outline-dark fw-semibold" onclick="tedarikciOdemeAc(@t.Id, '@t.Ad', @t.Bakiye.ToString(System.Globalization.CultureInfo.InvariantCulture))">Ödeme Yap</button>
+                                    }
+                                    <button class="btn btn-sm btn-light border text-muted" onclick="tedarikciSil(@t.Id)" title="Sil"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center text-muted small">Kayıtlı tedarikçi bulunmuyor.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. SON HAREKETLER -->
+    <div class="row">
+        <div class="col-12">
+            <div class="panel-box">
+                <div class="panel-header bg-light">
+                    <span><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i> Son Hareketler</span>
+                </div>
+                <div style="max-height: 450px; overflow-y: auto;">
+                    @if (ViewBag.SonHareketler != null && ((IEnumerable<dynamic>)ViewBag.SonHareketler).Any())
+                    {
+                        foreach (var islem in ViewBag.SonHareketler)
+                        {
+                            <div class="data-row">
+                                <div class="d-flex align-items-center">
+                                    <div style="width:36px; height:36px; background:@(islem.IsPositive ? "#dcfce7" : "#fee2e2"); color:@(islem.IsPositive ? "#15803d" : "#b91c1c"); border-radius:8px; display:flex; align-items:center; justify-content:center; margin-right:14px;">
+                                        <i class="fa-solid @(islem.IsPositive ? "fa-arrow-down" : "fa-arrow-up")"></i>
+                                    </div>
+                                    <div>
+                                        <div class="r-title">
+                                            @islem.Baslik
+                                            <span class="badge ms-2" style="background:@(islem.IsPositive ? "#dcfce7; color:#15803d;" : "#fee2e2; color:#b91c1c;"); font-size:0.68rem;">@islem.Tur</span>
+                                        </div>
+                                        <div class="r-sub"><i class="fa-regular fa-clock me-1"></i> @islem.Tarih.ToString("dd.MM.yyyy HH:mm") — @islem.Yontem</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="r-amount @(islem.IsPositive ? "text-success" : "text-danger") me-3">
+                                        @(islem.IsPositive ? "+" : "-") @islem.Tutar.ToString("N2") TL
+                                    </div>
+                                    <button class="btn btn-sm btn-light border text-secondary" onclick="hareketDetayGoster('@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(islem.Baslik))', '@islem.Tur', '@islem.Tarih.ToString("dd.MM.yyyy HH:mm")', '@islem.Tutar.ToString("N2") TL', '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(islem.DetayBilgi))')">
+                                        <i class="fa-solid fa-eye me-1"></i> Detay
+                                    </button>
+                                    <button class="btn btn-sm btn-light border text-danger" onclick="hareketSil(@islem.Id, @(islem.IsMusteri.ToString().ToLower()))">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center text-muted">Henüz kasa hareketi bulunmuyor.</div>
                     }
                 </div>
             </div>
@@ -229,169 +532,580 @@
 
 </div>
 
-<!-- İŞLEM EKLEME MODALI (Gider, Ek Gelir, Manuel Alacak) -->
-<div class="modal fade" id="modalFinansIslem" tabindex="-1">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header border-0 bg-light">
-                <h6 class="modal-title fw-bold" id="islemModalTitle">İşlem Ekle</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<!-- YENİ: MÜŞTERİ BORÇLARI TAM EKRAN MODAL -->
+<div class="modal fade" id="modalMusteriBorclariTamEkran" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header modal-corp-header d-flex justify-content-between align-items-center">
+                <h5 class="modal-title fw-bold mb-0">
+                    <i class="fa-solid fa-users me-2"></i> Müşteriden Alınacak Borçlar (Detaylı Döküm)
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
             </div>
-            <div class="modal-body">
-                <input type="hidden" id="islemTuru">
-                <div class="mb-3" id="kisiSecimAlani" style="display:none;">
-                    <label class="form-label small text-muted">Kayıtlı Müşteri Mi?</label>
-                    <select class="form-select mb-2" id="islemMusteriId">
-                        <option value="">Hayır, Dışarıdan Biri</option>
-                        @if(ViewBag.TumMusteriler != null) { foreach(var m in ViewBag.TumMusteriler) { <option value="@m.Id">@m.AdSoyad</option> } }
-                    </select>
-                    <input type="text" class="form-control" id="islemMuhatapAd" placeholder="Kişi / Kurum Adı">
+
+            <!-- ARAMA BARI -->
+            <div class="p-3 bg-light border-bottom">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-6 col-lg-5">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                            <input type="text" id="borcMusteriAraInput" class="form-control" placeholder="Müşteri, gelin veya damat adı yazın..." onkeyup="borcluMusteriFiltrele()">
+                            <button class="btn btn-dark fw-semibold px-4" type="button" onclick="borcluMusteriFiltrele()"><i class="fa-solid fa-search me-1"></i> Ara</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-7 text-md-end text-muted small fw-semibold">
+                        <span id="borcluGosterilenSayi">Tüm kayıtlar listeleniyor</span>
+                    </div>
                 </div>
-                <div class="mb-3"><label class="form-label small text-muted">Tutar (₺)</label><input type="number" class="form-control fw-bold" id="islemTutar" required></div>
-                <div class="mb-3"><label class="form-label small text-muted">Açıklama</label><input type="text" class="form-control" id="islemAciklama" placeholder="Örn: Elektrik Faturası" required></div>
-                <div class="mb-3"><label class="form-label small text-muted">Tarih</label><input type="date" class="form-control" id="islemTarih" required></div>
             </div>
-            <div class="modal-footer border-0"><button type="button" class="btn btn-dark w-100" onclick="islemKaydet()">Kaydet</button></div>
+
+            <!-- TABLO LİSTESİ -->
+            <div class="modal-body p-0 table-responsive" style="background:#fff;">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light border-bottom text-secondary" style="font-size: 0.82rem; text-transform: uppercase;">
+                        <tr>
+                            <th class="ps-4 py-3">Sözleşme Sahibi / Çift Bilgisi</th>
+                            <th class="py-3">Toplam Tutar</th>
+                            <th class="py-3">Tahsil Edilen (Ödenen)</th>
+                            <th class="py-3">Kalan Borç Tutarı</th>
+                            <th class="py-3 text-end pe-4">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tamEkranBorcluTbody">
+                        @if (ViewBag.MusteriBorclari != null)
+                        {
+                            foreach (var b in ViewBag.MusteriBorclari)
+                            {
+                                <tr class="borclu-satir border-bottom">
+                                    <td class="ps-4 py-3">
+                                        <div class="fw-bold text-dark fs-6 aranan-metin">@b.GorunenIsim</div>
+                                        <small class="text-muted"><i class="fa-solid fa-id-badge me-1"></i>Müşteri No: #@b.MusteriId</small>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-dark">@b.ToplamBorc.ToString("N2") ₺</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-success fw-bold">@b.Odenen.ToString("N2") ₺</span>
+                                    </td>
+                                    <td>
+                                        @if (b.Kalan > 0)
+                                        {
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle fs-6 px-3 py-2 fw-bolder">
+                                                @b.Kalan.ToString("N2") ₺
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-bold">
+                                                <i class="fa-solid fa-check me-1"></i> Borç Yok (Ödendi)
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        @if (b.Kalan > 0)
+                                        {
+                                            <button class="btn btn-sm btn-success fw-bold px-3 py-2 shadow-sm" onclick="hizliOdemeAl(@b.MusteriId, @b.Kalan.ToString(System.Globalization.CultureInfo.InvariantCulture))">
+                                                <i class="fa-solid fa-hand-holding-dollar me-1"></i> Tahsil Et
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-light border text-muted px-3" disabled>Tamamlandı</button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">Kayıtlı borç bulunamadı.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer bg-light border-top">
+                <button type="button" class="btn btn-secondary px-4 fw-semibold" data-bs-dismiss="modal">Kapat</button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- ÖDEME AL (CARİ) MODALI -->
-<div class="modal fade" id="modalOdemeAl" tabindex="-1">
+<!-- DİĞER MODALLAR -->
+<div class="modal fade" id="modalFinansIslem" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-success text-white border-0"><h6 class="modal-title fw-bold"><i class="fa-solid fa-plus-circle me-1"></i> Müşteriden Ödeme Al</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
+            <div class="modal-corp-header d-flex justify-content-between align-items-center">
+                <h6 class="modal-title fw-bold mb-0" id="islemModalTitle">Kasa İşlemi Kaydı</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <input type="hidden" id="islemTuru">
+
+                <div class="mb-3" id="kisiSecimAlani" style="display:none;">
+                    <label class="form-label-corp">Borçlu Kişi / Kurum Türü</label>
+                    <select class="form-select mb-2" id="islemMusteriId" onchange="musteriSecimDegisti()">
+                        <option value="">Dışarıdan Kişi veya Kurum</option>
+                        @if (ViewBag.TumMusteriler != null)
+                        {
+                            foreach (var m in ViewBag.TumMusteriler)
+                            {
+                                <option value="@m.Id">Kayıtlı Müşteri: @m.AdSoyad</option>
+                            }
+                        }
+                    </select>
+                    <div id="manuelMuhatapDiv">
+                        <label class="form-label-corp mt-2">Borçlu Kişi / Firma Adı *</label>
+                        <input type="text" class="form-control" id="islemMuhatapAd">
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label-corp">Tutar (₺) *</label>
+                        <input type="number" class="form-control fw-bold" id="islemTutar" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-corp">İşlem Tarihi *</label>
+                        <input type="date" class="form-control" id="islemTarih" required>
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label-corp">Açıklama *</label>
+                    <input type="text" class="form-control" id="islemAciklama" required>
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-top">
+                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-dark btn-sm px-4 fw-bold" onclick="islemKaydet()"><i class="fa-solid fa-check me-1"></i> Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalOdemeAl" tabindex="-1" style="z-index: 1065;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-corp-header d-flex justify-content-between align-items-center" style="background-color:#15803d;">
+                <h6 class="modal-title fw-bold mb-0"><i class="fa-solid fa-hand-holding-dollar me-2"></i> Müşteri Borç Tahsilatı</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
                 <div class="mb-3">
-                    <label class="form-label small text-muted">Borçlu Müşteri Seç</label>
+                    <label class="form-label-corp">Müşteri Seçiniz *</label>
                     <select class="form-select" id="odemeMusteriId">
-                        <option value="">Seçiniz...</option>
-                        @if(ViewBag.MusteriCarileri != null) { foreach(var b in ViewBag.MusteriCarileri) { if(b.Kalan > 0) { <option value="@b.Musteri.Id">@b.Musteri.AdSoyad (Kalan: @b.Kalan.ToString("N0") ₺)</option> } } }
+                        <option value="">Seçiniz</option>
+                        @if (ViewBag.MusteriBorclari != null)
+                        {
+                            foreach (var b in ViewBag.MusteriBorclari)
+                            {
+                                if (b.Kalan > 0)
+                                {
+                                    <option value="@b.MusteriId">@b.GorunenIsim — (Kalan: @b.Kalan.ToString("N2") ₺)</option>
+                                }
+                            }
+                        }
                     </select>
                 </div>
-                <div class="row g-2 mb-3">
-                    <div class="col-md-6"><label class="form-label small text-muted">Tutar (₺)</label><input type="number" class="form-control fw-bold text-success" id="odemeTutar"></div>
-                    <div class="col-md-6"><label class="form-label small text-muted">Yöntem</label><select class="form-select" id="odemeYontem"><option value="Nakit">Nakit</option><option value="Kredi Kartı">Kredi Kartı</option><option value="Havale/EFT">Havale/EFT</option></select></div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label-corp">Tutar (₺) *</label>
+                        <input type="number" class="form-control fw-bold text-success" id="odemeTutar">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-corp">Ödeme Yöntemi</label>
+                        <select class="form-select" id="odemeYontem">
+                            <option value="Nakit">Nakit</option>
+                            <option value="Havale/EFT">Havale / EFT</option>
+                            <option value="Kredi Kartı">Kredi Kartı</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="mb-2"><label class="form-label small text-muted">Açıklama</label><input type="text" class="form-control" id="odemeAciklama" placeholder="Örn: Ara Ödeme"></div>
+                <div class="mb-2">
+                    <label class="form-label-corp">Açıklama</label>
+                    <input type="text" class="form-control" id="odemeAciklama">
+                </div>
             </div>
-            <div class="modal-footer border-0"><button type="button" class="btn btn-success w-100" onclick="odemeKaydet()">Tahsilatı Tamamla</button></div>
+            <div class="modal-footer bg-light border-top">
+                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-success btn-sm px-4 fw-bold" onclick="odemeKaydet()"><i class="fa-solid fa-check me-1"></i> Tahsilatı Kaydet</button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- YENİ TEDARİKÇİ MODALI -->
-<div class="modal fade" id="modalTedarikciEkle" tabindex="-1">
+<div class="modal fade" id="modalManuelTahsil" tabindex="-1">
     <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-light border-0"><h6 class="modal-title fw-bold">Yeni Tedarikçi Ekle</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <div class="mb-3"><label class="form-label small text-muted">Firma / Kişi Adı</label><input type="text" class="form-control" id="tedAd" required></div>
-                <div class="mb-3"><label class="form-label small text-muted">Sektörü</label><input type="text" class="form-control" id="tedSektor" placeholder="Örn: Fotoğrafçı"></div>
-                <div class="mb-3"><label class="form-label small text-muted">Başlangıç Borcumuz (₺)</label><input type="number" class="form-control fw-bold text-danger" id="tedBakiye" value="0"></div>
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-corp-header d-flex justify-content-between align-items-center" style="background-color:#15803d;">
+                <h6 class="modal-title fw-bold mb-0">Alacak Tahsilatı</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-footer border-0"><button type="button" class="btn btn-dark w-100" onclick="tedarikciEkle()">Kaydet</button></div>
+            <div class="modal-body p-4">
+                <input type="hidden" id="manuelTahsilId">
+                <div class="mb-2 fw-bold text-dark" id="manuelTahsilKisi"></div>
+                <div class="mb-3">
+                    <label class="form-label-corp">Alınan Tutar (₺)</label>
+                    <input type="number" class="form-control fw-bold text-success" id="manuelTahsilTutar">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label-corp">Ödeme Yöntemi</label>
+                    <select class="form-select" id="manuelTahsilYontem">
+                        <option value="Nakit">Nakit</option>
+                        <option value="Havale/EFT">Havale / EFT</option>
+                        <option value="Kredi Kartı">Kredi Kartı</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-success w-100 fw-bold btn-sm" onclick="manuelAlacakTahsilKaydet()">Kaydet</button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- TEDARİKÇİYE ÖDEME YAP MODALI -->
+<div class="modal fade" id="modalTedarikciEkle" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-corp-header d-flex justify-content-between align-items-center">
+                <h6 class="modal-title fw-bold mb-0"><i class="fa-solid fa-truck-field me-2"></i> Yeni Tedarikçi Kaydı</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label class="form-label-corp">Firma veya Kişi Adı *</label>
+                    <input type="text" class="form-control" id="tedAd" required>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label-corp">Sektör / Kategori</label>
+                        <input type="text" class="form-control" id="tedSektor">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-corp">Telefon</label>
+                        <input type="tel" class="form-control" id="tedTel" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label-corp">Toplam Borcumuz (₺)</label>
+                    <input type="number" class="form-control fw-bold text-danger" id="tedBakiye" value="0">
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-dark btn-sm px-4 fw-bold" onclick="tedarikciEkle()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="modalTedarikciOdeme" tabindex="-1">
     <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-light border-0"><h6 class="modal-title fw-bold">Tedarikçiye Ödeme Yap</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <input type="hidden" id="odenecekTedarikciId">
-                <div class="mb-3"><label class="form-label small text-muted" id="odenecekTedarikciAd">Tedarikçi</label><input type="number" class="form-control fw-bold text-danger" id="tedOdemeTutar" placeholder="Ödenecek Tutar ₺" required></div>
-                <div class="mb-3"><input type="text" class="form-control" id="tedOdemeAciklama" placeholder="Açıklama (Örn: Kapora ödemesi)" required></div>
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-corp-header d-flex justify-content-between align-items-center">
+                <h6 class="modal-title fw-bold mb-0">Tedarikçi Borç Ödemesi</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-footer border-0"><button type="button" class="btn btn-dark w-100" onclick="tedarikciOdemeKaydet()">Ödemeyi Düş ve Kaydet</button></div>
+            <div class="modal-body p-4">
+                <input type="hidden" id="odenecekTedarikciId">
+                <div class="fw-bold mb-3 text-dark" id="odenecekTedarikciAd"></div>
+                <div class="mb-3">
+                    <label class="form-label-corp">Ödenecek Tutar (₺) *</label>
+                    <input type="number" class="form-control fw-bold text-danger" id="tedOdemeTutar" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label-corp">Açıklama *</label>
+                    <input type="text" class="form-control" id="tedOdemeAciklama" required>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-dark w-100 btn-sm fw-bold" onclick="tedarikciOdemeKaydet()">Ödemeyi Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDonemHareketleri" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-corp-header d-flex justify-content-between align-items-center">
+                <h6 class="modal-title fw-bold mb-0" id="modalDonemBaslik">Dönem Hareketleri Dökümü</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0" style="max-height: 450px; overflow-y: auto;" id="donemHareketleriListesi">
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalHareketDetay" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-corp-header d-flex justify-content-between align-items-center">
+                <h6 class="modal-title fw-bold mb-0"><i class="fa-solid fa-receipt me-2"></i> İşlem Kayıt Detayı</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <table class="table table-bordered mb-0">
+                    <tr><th class="bg-light" style="width:35%;">İşlem Başlığı</th><td class="fw-bold" id="detayBaslik"></td></tr>
+                    <tr><th class="bg-light">İşlem Türü</th><td id="detayTur"></td></tr>
+                    <tr><th class="bg-light">Tarih ve Saat</th><td id="detayTarih"></td></tr>
+                    <tr><th class="bg-light">Tutar</th><td class="fw-bolder fs-5" id="detayTutar"></td></tr>
+                    <tr><th class="bg-light">Detaylı Açıklama</th><td id="detayAciklama"></td></tr>
+                </table>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">Kapat</button>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
+        var aktifDonemTipi = 'Aylik';
+
         $(document).ready(function() {
-            donemGetir('Aylik', $('.donem-btn.active')[0]);
-            document.getElementById('islemTarih').valueAsDate = new Date();
+            var bugun = new Date().toISOString().split('T')[0];
+            $('#islemTarih').val(bugun);
+            $('#filtreGun').val(bugun);
+            donemYenile();
         });
 
-        function donemGetir(tip, btnElement) {
-            $('.donem-btn').removeClass('active btn-secondary text-white').addClass('btn-outline-secondary').css('background-color', '').css('border-color', '');
-            $(btnElement).addClass('active btn-secondary text-white').removeClass('btn-outline-secondary').css('background-color', '#6f42c1').css('border-color', '#6f42c1');
+        function tamEkranBorclularAc() {
+            $('#borcMusteriAraInput').val('');
+            borcluMusteriFiltrele();
+            $('#modalMusteriBorclariTamEkran').modal('show');
+        }
 
-            $.get('/Finans/GetDonemOzeti?tip=' + tip, function(res) {
+        function borcluMusteriFiltrele() {
+            var aranan = $('#borcMusteriAraInput').val().toLowerCase().trim();
+            var gorunen = 0;
+            var toplam = 0;
+
+            $('#tamEkranBorcluTbody tr.borclu-satir').each(function() {
+                toplam++;
+                var metin = $(this).find('.aranan-metin').text().toLowerCase();
+                if (metin.indexOf(aranan) > -1) {
+                    $(this).show();
+                    gorunen++;
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            if (aranan === "") {
+                $('#borcluGosterilenSayi').text('Toplam ' + toplam + ' kayıt listeleniyor');
+            } else {
+                $('#borcluGosterilenSayi').text('"' + aranan + '" araması için ' + gorunen + ' sonuç bulundu');
+            }
+        }
+
+        function donemTipDegistir(tip, btn) {
+            aktifDonemTipi = tip;
+            $('.donem-btn').removeClass('active btn-dark').addClass('btn-outline-secondary');
+            $(btn).removeClass('btn-outline-secondary').addClass('active btn-dark');
+
+            if (tip === 'Gunluk') {
+                $('#filtreGun').show();
+                $('#filtreAy, #filtreYil').hide();
+            } else if (tip === 'Aylik') {
+                $('#filtreGun').hide();
+                $('#filtreAy, #filtreYil').show();
+            } else {
+                $('#filtreGun, #filtreAy').hide();
+                $('#filtreYil').show();
+            }
+            donemYenile();
+        }
+
+        function donemYenile() {
+            var yil = $('#filtreYil').val();
+            var ay = $('#filtreAy').val();
+            var gun = $('#filtreGun').val();
+
+            $.get('/Finans/GetDonemOzeti', { tip: aktifDonemTipi, yil: yil, ay: ay, gun: gun }, function(res) {
+                $('#seciliDonemBaslik').text(res.aciklama);
+                $('#modalDonemBaslik').text(res.aciklama + ' — İşlem Dökümü');
                 $('#ozetGelir').text(res.gelir + ' TL');
                 $('#ozetGider').text(res.gider + ' TL');
-                $('#ozetNet').text(res.net + ' TL').removeClass('text-success text-danger').addClass(res.isPositive ? 'text-success' : 'text-danger');
+                $('#ozetNet').text(res.net + ' TL')
+                    .removeClass('text-success text-danger')
+                    .addClass(res.isPositive ? 'text-success' : 'text-danger');
+                $('#donemIslemSayisi').text(res.islemSayisi);
+
+                var html = '';
+                if (res.hareketler && res.hareketler.length > 0) {
+                    res.hareketler.forEach(function(h) {
+                        var renk = h.isPositive ? 'text-success' : 'text-danger';
+                        var isaret = h.isPositive ? '+' : '-';
+                        html += `<div class="data-row">
+                                    <div><div class="r-title">${h.baslik}</div><div class="r-sub">${h.tarih} — ${h.tur}</div></div>
+                                    <div class="r-amount ${renk}">${isaret} ${h.tutar} TL</div>
+                                 </div>`;
+                    });
+                } else {
+                    html = '<div class="p-4 text-center text-muted">Bu dönemde kayıtlı işlem bulunmuyor.</div>';
+                }
+                $('#donemHareketleriListesi').html(html);
             });
+        }
+
+        function musteriSecimDegisti() {
+            if ($('#islemMusteriId').val() !== "") {
+                $('#manuelMuhatapDiv').hide();
+            } else {
+                $('#manuelMuhatapDiv').show();
+            }
         }
 
         function islemModalAc(tur) {
             $('#islemTuru').val(tur);
-            $('#islemModalTitle').text(tur === 'Manuel Alacak' ? 'Yeni Alacak / Borç Ekle' : tur + ' Ekle');
-            if(tur === 'Manuel Alacak') { $('#kisiSecimAlani').show(); } else { $('#kisiSecimAlani').hide(); }
+            $('#islemTutar, #islemAciklama, #islemMuhatapAd').val('');
+            $('#islemMusteriId').val('');
+            musteriSecimDegisti();
+
+            if (tur === 'Manuel Alacak') {
+                $('#islemModalTitle').text('Yeni Alacak / Borçlu Kaydı');
+                $('#kisiSecimAlani').show();
+            } else if (tur === 'Gider') {
+                $('#islemModalTitle').text('Yeni Gider Kaydı');
+                $('#kisiSecimAlani').hide();
+            } else {
+                $('#islemModalTitle').text('Yeni Ek Gelir Kaydı');
+                $('#kisiSecimAlani').hide();
+            }
             $('#modalFinansIslem').modal('show');
         }
 
         function islemKaydet() {
-            var data = { 
-                tur: $('#islemTuru').val(), 
-                tutar: $('#islemTutar').val(), 
-                aciklama: $('#islemAciklama').val(), 
-                tarih: $('#islemTarih').val(), 
-                musteriId: $('#islemMusteriId').val(), 
-                muhatapIsim: $('#islemMuhatapAd').val() 
+            var data = {
+                tur: $('#islemTuru').val(),
+                tutar: $('#islemTutar').val(),
+                aciklama: $('#islemAciklama').val(),
+                tarih: $('#islemTarih').val(),
+                musteriId: $('#islemMusteriId').val(),
+                muhatapIsim: $('#islemMuhatapAd').val()
             };
-            if(!data.tutar || !data.aciklama) { alert("Lütfen tutar ve açıklama giriniz."); return; }
-            
+            if (!data.tutar || !data.aciklama) { alert("Lütfen tutar ve açıklama alanlarını doldurunuz."); return; }
+            if (data.tur === 'Manuel Alacak' && !data.musteriId && !data.muhatapIsim) {
+                alert("Lütfen borçlu müşteriyi seçin veya kişi/kurum adını yazın."); return;
+            }
+
             $.post('/Finans/FinansIslemEkle', data, function(res) {
-                if(res.success) location.reload();
+                if (res.success) location.reload();
                 else alert(res.mesaj);
             });
         }
 
-        function odemeKaydet() {
-            var mId = $('#odemeMusteriId').val(); var tutar = $('#odemeTutar').val();
-            if(!mId || !tutar || tutar <= 0) { alert("Lütfen müşteri seçip geçerli bir tutar girin."); return; }
+        function odemeAlModalAc() {
+            $('#odemeMusteriId').val('');
+            $('#odemeTutar, #odemeAciklama').val('');
+            $('#modalOdemeAl').modal('show');
+        }
 
-            $.post('/Finans/OdemeAl', { musteriId: mId, tutar: tutar, yontem: $('#odemeYontem').val(), aciklama: $('#odemeAciklama').val() }, function(res) {
-                if(res.success) location.reload();
+        function hizliOdemeAl(musteriId, kalanTutar) {
+            $('#odemeMusteriId').val(musteriId);
+            $('#odemeTutar').val(kalanTutar);
+            $('#odemeAciklama').val('');
+            $('#modalOdemeAl').modal('show');
+        }
+
+        function odemeKaydet() {
+            var mId = $('#odemeMusteriId').val();
+            var tutar = $('#odemeTutar').val();
+            if (!mId || !tutar || tutar <= 0) { alert("Lütfen müşteriyi seçip geçerli bir tutar girin."); return; }
+
+            $.post('/Finans/OdemeAl', {
+                musteriId: mId,
+                tutar: tutar,
+                yontem: $('#odemeYontem').val(),
+                aciklama: $('#odemeAciklama').val()
+            }, function(res) {
+                if (res.success) location.reload();
+                else alert(res.mesaj);
+            });
+        }
+
+        function manuelAlacakTahsilModal(id, kisi, tutar) {
+            $('#manuelTahsilId').val(id);
+            $('#manuelTahsilKisi').text('Borçlu: ' + kisi);
+            $('#manuelTahsilTutar').val(tutar);
+            $('#modalManuelTahsil').modal('show');
+        }
+
+        function manuelAlacakTahsilKaydet() {
+            $.post('/Finans/ManuelAlacakTahsilEt', {
+                id: $('#manuelTahsilId').val(),
+                tutar: $('#manuelTahsilTutar').val(),
+                yontem: $('#manuelTahsilYontem').val()
+            }, function(res) {
+                if (res.success) location.reload();
                 else alert(res.mesaj);
             });
         }
 
         function tedarikciEkle() {
             var ad = $('#tedAd').val();
-            if(!ad) { alert("Firma/Kişi adı zorunludur."); return; }
-            $.post('/Finans/TedarikciEkle', { ad: ad, telefon: '', sektor: $('#tedSektor').val(), bakiye: $('#tedBakiye').val() }, function(res) {
-                if(res.success) location.reload();
+            if (!ad) { alert("Firma veya kişi adı zorunludur."); return; }
+            $.post('/Finans/TedarikciEkle', {
+                ad: ad,
+                telefon: $('#tedTel').val(),
+                sektor: $('#tedSektor').val(),
+                bakiye: $('#tedBakiye').val()
+            }, function(res) {
+                if (res.success) location.reload();
+                else alert(res.mesaj);
             });
         }
 
-        function tedarikciOdemeAc(id, ad) { 
-            $('#odenecekTedarikciId').val(id); 
-            $('#odenecekTedarikciAd').text(ad + ' Firmasına Ödeme'); 
-            $('#modalTedarikciOdeme').modal('show'); 
+        function tedarikciOdemeAc(id, ad, bakiye) {
+            $('#odenecekTedarikciId').val(id);
+            $('#odenecekTedarikciAd').text(ad + ' (Borç: ' + bakiye + ' ₺)');
+            $('#tedOdemeTutar').val(bakiye);
+            $('#tedOdemeAciklama').val('');
+            $('#modalTedarikciOdeme').modal('show');
         }
-        
+
         function tedarikciOdemeKaydet() {
-            $.post('/Finans/TedarikciOdemeYap', { 
-                tedarikciId: $('#odenecekTedarikciId').val(), 
-                tutar: $('#tedOdemeTutar').val(), 
-                aciklama: $('#tedOdemeAciklama').val() 
-            }, function(res) { 
-                if(res.success) location.reload(); 
-                else alert("Hata oluştu."); 
+            $.post('/Finans/TedarikciOdemeYap', {
+                tedarikciId: $('#odenecekTedarikciId').val(),
+                tutar: $('#tedOdemeTutar').val(),
+                aciklama: $('#tedOdemeAciklama').val()
+            }, function(res) {
+                if (res.success) location.reload();
+                else alert("Lütfen geçerli bir tutar giriniz.");
             });
+        }
+
+        function tedarikciSil(id) {
+            if (confirm("Bu tedarikçi kaydını silmek istediğinize emin misiniz?")) {
+                $.post('/Finans/TedarikciSil', { id: id }, function(res) {
+                    if (res.success) location.reload();
+                });
+            }
+        }
+
+        function hareketDetayGoster(baslik, tur, tarih, tutar, detay) {
+            $('#detayBaslik').text(baslik);
+            $('#detayTur').text(tur);
+            $('#detayTarih').text(tarih);
+            $('#detayTutar').text(tutar);
+            $('#detayAciklama').text(detay);
+            $('#modalHareketDetay').modal('show');
         }
 
         function hareketSil(id, isMusteri) {
-            if(confirm("Bu kaydı silmek istediğinize emin misiniz?")) {
+            if (confirm("Bu işlemi silmek istediğinize emin misiniz?")) {
                 $.post('/Finans/HareketSil', { id: id, isMusteri: isMusteri }, function(res) {
-                    if(res.success) location.reload();
-                    else alert("Silinemedi.");
+                    if (res.success) location.reload();
+                    else alert("Kayıt silinemedi.");
                 });
             }
         }
