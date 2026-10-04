@@ -1,0 +1,521 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gökçe Prime - Stüdyo & Sanat Galerisi Girişi</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --gold-primary: #d4af37;
+            --gold-light: #f3e5ab;
+            --gold-glow: rgba(212, 175, 55, 0.25);
+            --bg-dark: #08090c;
+            --card-bg: rgba(14, 16, 22, 0.90);
+            --border-gold: rgba(212, 175, 55, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 25%, rgba(212, 175, 55, 0.08) 0%, transparent 60%), radial-gradient(circle at 10% 90%, rgba(30, 41, 59, 0.25) 0%, transparent 50%), radial-gradient(circle at 90% 10%, rgba(212, 175, 55, 0.05) 0%, transparent 40%);
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+            padding: 40px 15px;
+        }
+
+        /* ARKA PLAN FİLİGRAN YAZISI */
+        .watermark-text {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Cinzel', serif;
+            font-size: clamp(3.5rem, 11vw, 12rem);
+            font-weight: 800;
+            letter-spacing: 0.35em;
+            color: rgba(255, 255, 255, 0.025);
+            white-space: nowrap;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .lens-ring {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            border: 1px solid rgba(212, 175, 55, 0.04);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ÜST VİZÖR BİLGİ ALANI */
+        .camera-hud-top {
+            position: fixed;
+            top: 24px;
+            left: 36px;
+            right: 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .hud-rec {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .hud-dot {
+            width: 7px;
+            height: 7px;
+            background: #ef4444;
+            border-radius: 50%;
+            animation: pulse 1.8s infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(0.85);
+            }
+        }
+
+        .hud-pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            color: var(--gold-primary);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.68rem;
+        }
+
+        /* MERKEZ KART */
+        .login-card-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 470px;
+            margin: auto;
+        }
+
+        .corner-bracket {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .cb-tl {
+            top: -8px;
+            left: -8px;
+            border-left: 2px solid var(--gold-primary);
+            border-top: 2px solid var(--gold-primary);
+        }
+
+        .cb-tr {
+            top: -8px;
+            right: -8px;
+            border-right: 2px solid var(--gold-primary);
+            border-top: 2px solid var(--gold-primary);
+        }
+
+        .cb-bl {
+            bottom: -8px;
+            left: -8px;
+            border-left: 2px solid var(--gold-primary);
+            border-bottom: 2px solid var(--gold-primary);
+        }
+
+        .cb-br {
+            bottom: -8px;
+            right: -8px;
+            border-right: 2px solid var(--gold-primary);
+            border-bottom: 2px solid var(--gold-primary);
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid var(--border-gold);
+            border-radius: 14px;
+            padding: 42px 38px 32px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 0 0 45px var(--gold-glow);
+        }
+
+        .brand-logo-wrap {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.18) 0%, rgba(15, 17, 23, 0.95) 70%);
+            border: 1.5px solid var(--gold-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-primary);
+            font-size: 1.6rem;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.35);
+        }
+
+        .brand-heading {
+            font-family: 'Cinzel', serif;
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 2.5px;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+            .brand-heading span {
+                color: var(--gold-primary);
+            }
+
+        .brand-subtext {
+            color: #94a3b8;
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .form-label-custom {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.74rem;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: #cbd5e1;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .input-wrap {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+            .input-wrap i.prefix-icon {
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #64748b;
+                font-size: 0.95rem;
+                transition: color 0.2s;
+            }
+
+            .input-wrap input {
+                width: 100%;
+                height: 48px;
+                background: rgba(8, 10, 15, 0.85);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                border-radius: 8px;
+                color: #ffffff;
+                font-size: 0.9rem;
+                padding: 0 42px 0 44px;
+                outline: none;
+                transition: all 0.25s ease;
+            }
+
+                .input-wrap input:focus {
+                    border-color: var(--gold-primary);
+                    background: rgba(8, 10, 15, 0.95);
+                    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+                }
+
+                    .input-wrap input:focus ~ i.prefix-icon {
+                        color: var(--gold-primary);
+                    }
+
+        .toggle-eye {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 0.92rem;
+        }
+
+            .toggle-eye:hover {
+                color: #cbd5e1;
+            }
+
+        .form-aux-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 6px 0 24px;
+            font-size: 0.8rem;
+        }
+
+        .form-check-label {
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        .form-check-input {
+            background-color: #080a0f;
+            border-color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+            .form-check-input:checked {
+                background-color: var(--gold-primary);
+                border-color: var(--gold-primary);
+            }
+
+        .btn-gold-submit {
+            width: 100%;
+            height: 48px;
+            background: linear-gradient(135deg, #e5b95c 0%, #c59737 50%, #9a7420 100%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #080a0f;
+            font-size: 0.92rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(197, 151, 55, 0.35);
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+            .btn-gold-submit:hover {
+                background: linear-gradient(135deg, #eed07e 0%, #d4a544 50%, #aa8127 100%);
+                box-shadow: 0 8px 26px rgba(197, 151, 55, 0.5);
+                transform: translateY(-1px);
+            }
+
+        .studio-branches {
+            margin-top: 26px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+        }
+
+        .branches-title {
+            font-size: 0.64rem;
+            letter-spacing: 2px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .branches-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+            .branches-tags span {
+                font-size: 0.7rem;
+                color: #94a3b8;
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                padding: 3px 8px;
+                border-radius: 4px;
+            }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 9px 14px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hud-footer {
+            position: fixed;
+            bottom: 18px;
+            left: 36px;
+            right: 36px;
+            display: flex;
+            justify-content: space-between;
+            color: #475569;
+            font-size: 0.68rem;
+            letter-spacing: 1.2px;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-text">G Ö K Ç E &nbsp; P R I M E</div>
+    <div class="lens-ring"></div>
+
+    <div class="camera-hud-top d-none d-md-flex">
+        <div class="d-flex align-items-center gap-3">
+            <div class="hud-rec">
+                <span class="hud-dot"></span>
+                <span>REC [PORTFOLIO]</span>
+            </div>
+            <span>350 SHOT</span>
+            <span>&bull;</span>
+            <span>f/1.4</span>
+            <span>&bull;</span>
+            <span style="color: #cbd5e1;"><i class="fa-solid fa-camera-retro me-1"></i> GÖKÇE PRIME ATÖLYE &amp; STÜDYO</span>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span>Kılavuz Çizgileri [ + ]</span>
+            <span class="hud-pill">Stüdyo Aktif</span>
+            <span>RAW PRO</span>
+            <span style="color: var(--gold-primary);"><i class="fa-solid fa-battery-full"></i></span>
+        </div>
+    </div>
+
+    <div class="login-card-container">
+        <div class="corner-bracket cb-tl"></div>
+        <div class="corner-bracket cb-tr"></div>
+        <div class="corner-bracket cb-bl"></div>
+        <div class="corner-bracket cb-br"></div>
+
+        <div class="login-card">
+            <div class="brand-logo-wrap">
+                <i class="fa-solid fa-camera"></i>
+            </div>
+
+            <h2 class="brand-heading">GÖKÇE <span>PRIME</span></h2>
+            <p class="brand-subtext">Fotoğraf Stüdyosu &amp; Rezervasyon Yönetimi</p>
+
+            @if (ViewBag.Hata != null)
+            {
+                <div class="alert-error">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>@ViewBag.Hata</span>
+                </div>
+            }
+
+            <form asp-action="Login" method="post" autocomplete="off">
+                <div class="mb-3">
+                    <div class="form-label-custom">
+                        <span>Kullanıcı Adı</span>
+                        <small style="color: #64748b;">STÜDYO ID</small>
+                    </div>
+                    <div class="input-wrap">
+                        <i class="fa-regular fa-user prefix-icon"></i>
+                        <input type="text" name="kullaniciAdi" placeholder="admin" required autofocus>
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <div class="form-label-custom">
+                        <span>Şifre</span>
+                    </div>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-lock prefix-icon"></i>
+                        <input type="password" id="sifreInput" name="sifre" placeholder="••••••••" required>
+                        <button type="button" class="toggle-eye" onclick="sifreGoster()">
+                            <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-aux-row">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="beniHatirla" checked>
+                        <label class="form-check-label" for="beniHatirla">Beni Hatırla</label>
+                    </div>
+                    <span style="font-size: 0.72rem; color: #64748b;">Giriş: admin / 1234</span>
+                </div>
+
+                <button type="submit" class="btn-gold-submit">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span>GİRİŞ YAP</span>
+                </button>
+            </form>
+
+            <div class="studio-branches">
+                <span class="branches-title">Stüdyo Branşları</span>
+                <div class="branches-tags">
+                    <span>Portre</span>
+                    <span>Düğün &amp; Dış Çekim</span>
+                    <span>Moda &amp; Lookbook</span>
+                    <span>Fine Art</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hud-footer d-none d-md-flex">
+        <div>GÖKÇE PRIME &copy; @DateTime.Now.Year &bull; Tüm Hakları Saklıdır.</div>
+        <div>OPERASYON TAKİP SİSTEMİ v2.4</div>
+    </div>
+
+    <script>
+        function sifreGoster() {
+            var input = document.getElementById("sifreInput");
+            var icon = document.getElementById("eyeIcon");
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
+</body>
+</html>

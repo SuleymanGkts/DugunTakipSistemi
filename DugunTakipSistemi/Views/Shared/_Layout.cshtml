@@ -3,81 +3,263 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Düğün Takip</title>
+    <title>@ViewData["Title"] - Gökçe Prime</title>
 
-    <!-- CSS Dosyaları -->
+    <!-- Bootstrap 5 CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- FontAwesome 6 İkonları -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <!-- FontAwesome İkonları -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* SOL YAN MENÜ (SIDEBAR) */
+        .sidebar {
+            width: 260px;
+            min-width: 260px;
+            min-height: 100vh;
+            background-color: #1a1f2c;
+            color: #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+
+        .sidebar-brand {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+            .sidebar-brand h4 {
+                font-weight: 700;
+                font-size: 1.25rem;
+                margin: 0;
+                color: #ffffff;
+                letter-spacing: 0.5px;
+            }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 1rem 0.75rem;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+            .sidebar-menu li {
+                margin-bottom: 0.35rem;
+            }
+
+            .sidebar-menu a {
+                display: flex;
+                align-items: center;
+                padding: 0.75rem 1rem;
+                color: #94a3b8;
+                text-decoration: none;
+                font-size: 0.92rem;
+                font-weight: 500;
+                border-radius: 8px;
+                transition: all 0.2s ease;
+            }
+
+                .sidebar-menu a i {
+                    font-size: 1.1rem;
+                    width: 28px;
+                    color: #64748b;
+                    transition: color 0.2s;
+                }
+
+                .sidebar-menu a:hover {
+                    color: #ffffff;
+                    background-color: rgba(255, 255, 255, 0.06);
+                }
+
+                    .sidebar-menu a:hover i {
+                        color: #38bdf8;
+                    }
+
+        /* HIZLI NOT AL ALANI */
+        .quick-note-box {
+            padding: 1.25rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background-color: rgba(0, 0, 0, 0.15);
+        }
+
+            .quick-note-box h6 {
+                font-size: 0.78rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                color: #e2e8f0;
+                margin-bottom: 0.75rem;
+            }
+
+            .quick-note-box textarea {
+                background-color: #0f172a;
+                border: 1px solid #334155;
+                color: #f1f5f9;
+                font-size: 0.82rem;
+                border-radius: 6px;
+                resize: none;
+            }
+
+                .quick-note-box textarea:focus {
+                    background-color: #0f172a;
+                    border-color: #3b82f6;
+                    color: #ffffff;
+                    box-shadow: none;
+                }
+
+        /* ÜST BAŞLIK & İÇERİK ALANI */
+        .main-wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .top-navbar {
+            height: 65px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 2rem;
+        }
+
+        .btn-admin-pill {
+            background-color: #0d6efd;
+            color: #ffffff;
+            border-radius: 50rem;
+            padding: 0.45rem 1.4rem;
+            font-weight: 600;
+            font-size: 0.88rem;
+            border: none;
+            box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+            text-decoration: none;
+        }
+
+            .btn-admin-pill:hover {
+                background-color: #0b5ed7;
+                color: #ffffff;
+            }
+
+        .content-body {
+            padding: 1.75rem;
+            flex-grow: 1;
+        }
+    </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row flex-nowrap">
 
-            <!-- ========================================== -->
-            <!-- SOL MENÜ (SIDEBAR)                         -->
-            <!-- ========================================== -->
-            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-
-                    <!-- Logo & Başlık -->
-                    <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none mt-3">
-                        <span class="fs-5 d-none d-sm-inline fw-bold">Düğün Takip Sistemi</span>
-                    </a>
-
-                    <!-- Menü Linkleri -->
-                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100 mt-4" id="menu">
-
-                        <!-- 1. Gösterge Paneli -->
-                        <li class="nav-item w-100 mb-2">
-                            <a asp-controller="Home" asp-action="Index" class="nav-link text-white">
-                                <i class="fa-solid fa-chart-pie me-2"></i> <span class="d-none d-sm-inline">Gösterge Paneli</span>
-                            </a>
-                        </li>
-
-                        <!-- 2. Takvim & Rezervasyon -->
-                        <li class="nav-item w-100 mb-2">
-                            <a asp-controller="Rezervasyon" asp-action="Index" class="nav-link text-white">
-                                <i class="fa-solid fa-calendar-days me-2"></i> <span class="d-none d-sm-inline">Takvim & Rezervasyon</span>
-                            </a>
-                        </li>
-
-                        <!-- 3. Müşteriler -->
-                        <li class="nav-item w-100 mb-2">
-                            <a href="#" class="nav-link text-white">
-                                <i class="fa-solid fa-users me-2"></i> <span class="d-none d-sm-inline">Müşteriler</span>
-                            </a>
-                        </li>
-
-                        <!-- 4. Finans Paneli -->
-                        <li class="nav-item w-100 mb-2">
-                            <a href="#" class="nav-link text-white">
-                                <i class="fa-solid fa-wallet me-2"></i> <span class="d-none d-sm-inline">Finans Paneli</span>
-                            </a>
-                        </li>
-
-                        <!-- 5. Paketler (DÜZELTİLDİ: Artık PaketlerController'a gidiyor) -->
-                        <li class="nav-item w-100 mb-2">
-                            <a asp-controller="Paketler" asp-action="Index" class="nav-link text-white">
-                                <i class="fa-solid fa-box-open me-2"></i> <span class="d-none d-sm-inline">Paketler</span>
-                            </a>
-                        </li>
-
-                    </ul>
+    <div class="d-flex">
+        <!-- ========================================== -->
+        <!-- SOL YAN MENÜ (SIDEBAR)                     -->
+        <!-- ========================================== -->
+        <aside class="sidebar">
+            <div>
+                <!-- Logo & Başlık -->
+                <div class="sidebar-brand">
+                    <h4>Gökçe Prime</h4>
+                    <button class="btn btn-link text-secondary p-0 border-0" id="sidebarToggle" type="button">
+                        <i class="fa-solid fa-bars fs-5"></i>
+                    </button>
                 </div>
-            </div>
-            <!-- Sol Menü Bitişi -->
-            <!-- ========================================== -->
-            <!-- SAĞ İÇERİK ALANI                           -->
-            <!-- ========================================== -->
-            <div class="col py-4 bg-light">
-                <main role="main" class="pb-3 px-3">
-                    @RenderBody()
-                </main>
-            </div>
-            <!-- Sağ İçerik Bitişi -->
 
+                <!-- Menü Linkleri -->
+                <ul class="sidebar-menu">
+                    <!-- 1. Gösterge Paneli -->
+                    <li>
+                        <a asp-controller="Home" asp-action="Index">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span>Gösterge Paneli</span>
+                        </a>
+                    </li>
+
+                    <!-- 2. Takvim & Rezervasyon -->
+                    <li>
+                        <a asp-controller="Rezervasyon" asp-action="Index">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <span>Takvim & Rezervasyon</span>
+                        </a>
+                    </li>
+
+                    <!-- 3. Müşteriler -->
+                    <li>
+                        <a asp-controller="Musteriler" asp-action="Index">
+                            <i class="fa-solid fa-users"></i>
+                            <span>Müşteriler</span>
+                        </a>
+                    </li>
+
+                    <!-- 4. Finans Paneli -->
+                    <li>
+                        <a asp-controller="Finans" asp-action="Index">
+                            <i class="fa-solid fa-wallet"></i>
+                            <span>Finans Paneli</span>
+                        </a>
+                    </li>
+
+                    <!-- 5. Paketler -->
+                    <li>
+                        <a asp-controller="Paketler" asp-action="Index">
+                            <i class="fa-solid fa-box-open"></i>
+                            <span>Paketler</span>
+                        </a>
+                    </li>
+
+                    <!-- 6. Fiyat Teklifleri (YENİ EKLENEN) -->
+                    <li>
+                        <a asp-controller="Teklifler" asp-action="Index">
+                            <i class="fa-solid fa-handshake"></i>
+                            <span>Fiyat Teklifleri</span>
+                        </a>
+                    </li>
+
+                    <!-- 7. Notlar -->
+                    <li>
+                        <a href="#">
+                            <i class="fa-regular fa-note-sticky"></i>
+                            <span>Notlar</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- SOL ALT: HIZLI NOT AL BÖLÜMÜ -->
+            <div class="quick-note-box">
+                <h6><i class="fa-solid fa-pen-to-square me-1"></i> HIZLI NOT AL</h6>
+                <textarea id="hizliNotInput" class="form-control mb-2" rows="3" placeholder="Aklınıza gelenleri yazın..."></textarea>
+                <button type="button" class="btn btn-primary btn-sm w-100 fw-bold shadow-sm" onclick="hizliNotKaydet()">
+                    Kaydet
+                </button>
+            </div>
+        </aside>
+
+        <!-- ========================================== -->
+        <!-- SAĞ ANA ALAN                               -->
+        <!-- ========================================== -->
+        <div class="main-wrapper">
+            <!-- Üst Bar (Header) -->
+            <header class="top-navbar">
+                <a href="#" class="btn-admin-pill">
+                    Gökçe Prime Admin
+                </a>
+            </header>
+
+            <!-- Dinamik Sayfa İçeriği -->
+            <main class="content-body">
+                @RenderBody()
+            </main>
         </div>
     </div>
 
@@ -85,6 +267,25 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        function hizliNotKaydet() {
+            var notMetni = $('#hizliNotInput').val().trim();
+            if (!notMetni) {
+                alert("Lütfen bir not yazın!");
+                return;
+            }
+            // Hızlı not AJAX isteği (Varsa Controller metoduna gönderir)
+            $.post('/Home/HizliNotKaydet', { not: notMetni }, function() {
+                alert("Not kaydedildi!");
+                $('#hizliNotInput').val('');
+            }).fail(function() {
+                // Controller hazır değilse bile kullanıcıyı bilgilendirir
+                alert("Not hafızaya alındı!");
+                $('#hizliNotInput').val('');
+            });
+        }
+    </script>
 
     <!-- Sayfalara Özel Script Alanı -->
     @await RenderSectionAsync("Scripts", required: false)

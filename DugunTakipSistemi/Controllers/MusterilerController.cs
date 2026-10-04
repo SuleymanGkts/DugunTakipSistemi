@@ -14,29 +14,45 @@ namespace DugunTakipSistemi.Controllers
             _context = context;
         }
 
-        // Takvimden tıklandığında modalı otomatik açmak için 'seciliMusteriId' parametresi ekledik
         public IActionResult Index(string aramaParametresi, int? seciliMusteriId)
         {
-            // Müşterileri, Rezervasyonları ve o rezervasyonların Mekanlarını birlikte çekiyoruz
             var sorgu = _context.Musteriler
                 .Include(m => m.Rezervasyonlar)
-                    .ThenInclude(r => r.Mekan) // Mekan verisini dahil ettik
+                    .ThenInclude(r => r.Mekan)
+                .Include(m => m.Rezervasyonlar)
+                    .ThenInclude(r => r.Paket)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(aramaParametresi))
             {
-                sorgu = sorgu.Where(m => m.AdSoyad.Contains(aramaParametresi) || m.Telefon.Contains(aramaParametresi));
+                sorgu = sorgu.Where(m =>
+                    m.AdSoyad.Contains(aramaParametresi) ||
+                    m.Telefon.Contains(aramaParametresi) ||
+                    (m.GelinAdSoyad != null && m.GelinAdSoyad.Contains(aramaParametresi)) ||
+                    (m.DamatAdSoyad != null && m.DamatAdSoyad.Contains(aramaParametresi)));
             }
 
             var musteriler = sorgu.OrderByDescending(m => m.Id).ToList();
 
             ViewBag.Arama = aramaParametresi;
-            ViewBag.SeciliMusteriId = seciliMusteriId; // Takvim yönlendirmesi için
+            ViewBag.SeciliMusteriId = seciliMusteriId;
 
             return View(musteriler);
         }
 
-        // Müşteri Güncelleme İşlemi
+        // YENİ MÜŞTERİ EKLEME İŞLEMİ
+        [HttpPost]
+        public IActionResult Ekle(Musteri yeniMusteri)
+        {
+            if (yeniMusteri != null && !string.IsNullOrWhiteSpace(yeniMusteri.AdSoyad))
+            {
+                _context.Musteriler.Add(yeniMusteri);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
+
+        // MÜŞTERİ GÜNCELLEME İŞLEMİ
         [HttpPost]
         public IActionResult Guncelle(Musteri guncelVeri)
         {
@@ -60,10 +76,14 @@ namespace DugunTakipSistemi.Controllers
             return RedirectToAction("Index");
         }
 
+        // MÜŞTERİ SİLME İŞLEMİ
         [HttpPost]
         public IActionResult Sil(int id)
         {
-            var musteri = _context.Musteriler.Find(id);
+            var musteri = _context.Musteriler
+                .Include(m => m.Rezervasyonlar)
+                .FirstOrDefault(m => m.Id == id);
+
             if (musteri != null)
             {
                 _context.Musteriler.Remove(musteri);

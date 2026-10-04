@@ -21,6 +21,7 @@ namespace DugunTakipSistemi.Models
         public DbSet<GenelNot> GenelNotlar { get; set; }
         public DbSet<FinansHareket> FinansHareketler { get; set; }
         public DbSet<Tedarikci> Tedarikciler { get; set; }
+        public DbSet<Teklif> Teklifler { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

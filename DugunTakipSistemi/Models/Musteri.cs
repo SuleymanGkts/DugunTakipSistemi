@@ -6,18 +6,19 @@
         public string AdSoyad { get; set; }
         public string Telefon { get; set; }
         public string? Email { get; set; }
-        public string? Adres { get; set; } // Yeni Eklendi
+        public string? Adres { get; set; } // Hataları kesmek için geri koyduk
 
         public string? GelinAdSoyad { get; set; }
-        public string? GelinTelefon { get; set; } // Yeni Eklendi
+        public string? GelinTelefon { get; set; }
+        public string? GelinTC { get; set; }
+        public string? GelinAdres { get; set; } // Gelin Evi
 
         public string? DamatAdSoyad { get; set; }
-        public string? DamatTelefon { get; set; } // Yeni Eklendi
-
-        public string? Notlar { get; set; } // İşletmeye özel iç notlar
-        public string? GelinTC { get; set; }
+        public string? DamatTelefon { get; set; }
         public string? DamatTC { get; set; }
+        public string? DamatAdres { get; set; } // Damat Evi
 
+        public string? Notlar { get; set; }
         public ICollection<Rezervasyon>? Rezervasyonlar { get; set; }
     }
 }

@@ -26,18 +26,19 @@ namespace DugunTakipSistemi.Controllers
         public string? DamatTC { get; set; }
         public string? GelinTel { get; set; }
         public string? DamatTel { get; set; }
+        public string? GelinAdres { get; set; }
+        public string? DamatAdres { get; set; }
 
         public DateTime Baslangic { get; set; }
         public DateTime Bitis { get; set; }
 
         public int MekanId { get; set; }
+        public string? MekanAdi { get; set; }
         public int? PaketId { get; set; }
         public decimal PaketFiyati { get; set; }
         public decimal Kapora { get; set; }
         public string? Notlar { get; set; }
-        public int? KisiSayisi { get; set; }
-
-        public string IslemTuru { get; set; } = "Düğün";
+        public string? IslemTuru { get; set; }
     }
 
     public class RezervasyonController : Controller
@@ -51,9 +52,22 @@ namespace DugunTakipSistemi.Controllers
             _env = env;
         }
 
+        private string TakvimBaslikOlustur(Musteri m)
+        {
+            if (m == null) return "İsimsiz Kayıt";
+            bool gelinVar = !string.IsNullOrWhiteSpace(m.GelinAdSoyad);
+            bool damatVar = !string.IsNullOrWhiteSpace(m.DamatAdSoyad);
+
+            if (gelinVar && damatVar) return $"{m.GelinAdSoyad} & {m.DamatAdSoyad}";
+            if (gelinVar) return m.GelinAdSoyad;
+            if (damatVar) return m.DamatAdSoyad;
+            return !string.IsNullOrWhiteSpace(m.AdSoyad) ? m.AdSoyad : "İsimsiz Kayıt";
+        }
+
         public IActionResult Index(int? seciliRezId)
         {
             ViewBag.Paketler = _context.Paketler.ToList();
+            ViewBag.Mekanlar = _context.Mekanlar.ToList();
             ViewBag.SeciliRezId = seciliRezId;
             return View();
         }
@@ -63,22 +77,58 @@ namespace DugunTakipSistemi.Controllers
         {
             if (veri == null) return Json(new { success = false, mesaj = "Sisteme veri ulaşmadı." });
 
+            if (!string.IsNullOrWhiteSpace(veri.GelinTC) && veri.GelinTC.Trim().Length != 11)
+                return Json(new { success = false, mesaj = "Gelin T.C. Kimlik Numarası 11 haneli olmalıdır!" });
+
+            if (!string.IsNullOrWhiteSpace(veri.DamatTC) && veri.DamatTC.Trim().Length != 11)
+                return Json(new { success = false, mesaj = "Damat T.C. Kimlik Numarası 11 haneli olmalıdır!" });
+
             try
             {
-                Musteri musteri;
+                if (veri.Bitis <= veri.Baslangic)
+                {
+                    veri.Bitis = veri.Baslangic.AddHours(4);
+                }
 
-                if (veri.MusteriId.HasValue && veri.MusteriId > 0)
+                string girilenMekanAdi = string.IsNullOrWhiteSpace(veri.MekanAdi) ? "Belirtilmedi" : veri.MekanAdi.Trim();
+                var mevcutMekan = _context.Mekanlar.FirstOrDefault(m => m.MekanAdi.ToLower() == girilenMekanAdi.ToLower());
+                if (mevcutMekan == null)
+                {
+                    mevcutMekan = new Mekan { MekanAdi = girilenMekanAdi };
+                    _context.Mekanlar.Add(mevcutMekan);
+                    _context.SaveChanges();
+                }
+                veri.MekanId = mevcutMekan.Id;
+
+                Musteri musteri = null;
+
+                if (veri.RezervasyonId.HasValue && veri.RezervasyonId > 0)
+                {
+                    var mevcutRez = _context.Rezervasyonlar.AsNoTracking().FirstOrDefault(r => r.Id == veri.RezervasyonId.Value);
+                    if (mevcutRez != null)
+                    {
+                        musteri = _context.Musteriler.Find(mevcutRez.MusteriId);
+                    }
+                }
+                else if (veri.MusteriId.HasValue && veri.MusteriId > 0)
                 {
                     musteri = _context.Musteriler.Find(veri.MusteriId.Value);
-                    if (musteri == null) return Json(new { success = false, mesaj = "Müşteri bulunamadı!" });
+                }
 
+                if (musteri != null)
+                {
                     musteri.AdSoyad = veri.AnaAdSoyad;
                     musteri.Telefon = veri.AnaTelefon;
-                    if (!string.IsNullOrEmpty(veri.Email)) musteri.Email = veri.Email;
-                    if (!string.IsNullOrEmpty(veri.GelinAd)) musteri.GelinAdSoyad = veri.GelinAd;
-                    if (!string.IsNullOrEmpty(veri.DamatAd)) musteri.DamatAdSoyad = veri.DamatAd;
-                    if (!string.IsNullOrEmpty(veri.GelinTel)) musteri.GelinTelefon = veri.GelinTel;
-                    if (!string.IsNullOrEmpty(veri.DamatTel)) musteri.DamatTelefon = veri.DamatTel;
+                    musteri.Email = veri.Email; // GÜNCELLENDİ: E-posta doğrudan güncelleniyor
+                    musteri.GelinAdSoyad = veri.GelinAd;
+                    musteri.DamatAdSoyad = veri.DamatAd;
+                    musteri.GelinTC = veri.GelinTC;
+                    musteri.DamatTC = veri.DamatTC;
+                    musteri.GelinTelefon = veri.GelinTel;
+                    musteri.DamatTelefon = veri.DamatTel;
+                    musteri.GelinAdres = veri.GelinAdres;
+                    musteri.DamatAdres = veri.DamatAdres;
+                    _context.SaveChanges();
                 }
                 else
                 {
@@ -93,7 +143,9 @@ namespace DugunTakipSistemi.Controllers
                         GelinTC = veri.GelinTC,
                         DamatTC = veri.DamatTC,
                         GelinTelefon = veri.GelinTel,
-                        DamatTelefon = veri.DamatTel
+                        DamatTelefon = veri.DamatTel,
+                        GelinAdres = veri.GelinAdres,
+                        DamatAdres = veri.DamatAdres
                     };
                     _context.Musteriler.Add(musteri);
                     _context.SaveChanges();
@@ -109,11 +161,9 @@ namespace DugunTakipSistemi.Controllers
                     rezervasyon.BaslangicTarihi = veri.Baslangic;
                     rezervasyon.BitisTarihi = veri.Bitis;
                     rezervasyon.MekanId = veri.MekanId;
-                    rezervasyon.PaketId = veri.PaketId;
-                    rezervasyon.SozlesmeDetayi = veri.IslemTuru;
+                    rezervasyon.PaketId = (veri.PaketId.HasValue && veri.PaketId > 0) ? veri.PaketId : null;
                     rezervasyon.ToplamUcret = veri.PaketFiyati;
                     rezervasyon.Notlar = veri.Notlar;
-                    rezervasyon.KisiSayisi = veri.KisiSayisi;
 
                     if (veri.Kapora > rezervasyon.AlinanKapora)
                     {
@@ -124,7 +174,17 @@ namespace DugunTakipSistemi.Controllers
                 }
                 else
                 {
-                    rezervasyon = new Rezervasyon { MusteriId = musteri.Id, BaslangicTarihi = veri.Baslangic, BitisTarihi = veri.Bitis, SozlesmeDetayi = veri.IslemTuru, ToplamUcret = veri.PaketFiyati, AlinanKapora = veri.Kapora, MekanId = veri.MekanId, PaketId = veri.PaketId, Notlar = veri.Notlar, KisiSayisi = veri.KisiSayisi };
+                    rezervasyon = new Rezervasyon
+                    {
+                        MusteriId = musteri.Id,
+                        BaslangicTarihi = veri.Baslangic,
+                        BitisTarihi = veri.Bitis,
+                        ToplamUcret = veri.PaketFiyati,
+                        AlinanKapora = veri.Kapora,
+                        MekanId = veri.MekanId,
+                        PaketId = (veri.PaketId.HasValue && veri.PaketId > 0) ? veri.PaketId : null,
+                        Notlar = veri.Notlar
+                    };
                     _context.Rezervasyonlar.Add(rezervasyon);
                     _context.SaveChanges();
 
@@ -154,22 +214,54 @@ namespace DugunTakipSistemi.Controllers
         [HttpGet]
         public IActionResult GetRezervasyonlar()
         {
-            var rezervasyonlar = _context.Rezervasyonlar.Include(r => r.Musteri).Include(r => r.Mekan).Include(r => r.Odemeler).ToList();
-            var liste = rezervasyonlar.Select(r => new {
-                id = r.Id,
-                title = r.Musteri != null ? (r.Musteri.GelinAdSoyad + " & " + r.Musteri.DamatAdSoyad) : "İsimsiz",
-                start = r.BaslangicTarihi.ToString("yyyy-MM-ddTHH:mm:ss"),
-                end = r.BitisTarihi.ToString("yyyy-MM-ddTHH:mm:ss"),
-                extendedProps = new { islemTuru = r.SozlesmeDetayi ?? "Organizasyon", mekan = r.Mekan != null ? r.Mekan.MekanAdi : "Mekan Yok", toplam = r.ToplamUcret, kapora = r.AlinanKapora, kalan = r.ToplamUcret - r.AlinanKapora, anaAd = r.Musteri?.AdSoyad, telefon = r.Musteri?.Telefon, notlar = r.Notlar, kisiSayisi = r.KisiSayisi }
+            var rezervasyonlar = _context.Rezervasyonlar
+                .Include(r => r.Musteri)
+                .Include(r => r.Mekan)
+                .Include(r => r.Paket)
+                .Include(r => r.Odemeler)
+                .ToList();
+
+            var liste = rezervasyonlar.Select(r => {
+                var bitis = r.BitisTarihi <= r.BaslangicTarihi ? r.BaslangicTarihi.AddHours(4) : r.BitisTarihi;
+                return new
+                {
+                    id = r.Id,
+                    title = TakvimBaslikOlustur(r.Musteri),
+                    start = r.BaslangicTarihi.ToString("yyyy-MM-ddTHH:mm:ss"),
+                    end = bitis.ToString("yyyy-MM-ddTHH:mm:ss"),
+                    extendedProps = new
+                    {
+                        islemTuru = r.SozlesmeDetayi ?? "Çekim",
+                        mekan = r.Mekan != null ? r.Mekan.MekanAdi : "Belirtilmedi",
+                        paket = r.Paket != null ? r.Paket.PaketAdi : "",
+                        toplam = r.ToplamUcret,
+                        kapora = r.AlinanKapora,
+                        kalan = r.ToplamUcret - r.AlinanKapora,
+                        anaAd = r.Musteri?.AdSoyad,
+                        telefon = r.Musteri?.Telefon,
+                        email = r.Musteri?.Email,
+                        notlar = r.Notlar
+                    }
+                };
             }).ToList();
+
             return Json(liste);
         }
 
         [HttpGet]
         public IActionResult GetRezervasyonDetay(int id)
         {
-            var r = _context.Rezervasyonlar.Include(x => x.Musteri).Include(x => x.Mekan).Include(x => x.Odemeler).Include(x => x.Personeller).FirstOrDefault(x => x.Id == id);
+            var r = _context.Rezervasyonlar
+                .Include(x => x.Musteri)
+                .Include(x => x.Mekan)
+                .Include(x => x.Paket)
+                .Include(x => x.Odemeler)
+                .Include(x => x.Personeller)
+                .FirstOrDefault(x => x.Id == id);
+
             if (r == null) return Json(new { success = false });
+
+            var bitis = r.BitisTarihi <= r.BaslangicTarihi ? r.BaslangicTarihi.AddHours(4) : r.BitisTarihi;
 
             return Json(new
             {
@@ -179,25 +271,30 @@ namespace DugunTakipSistemi.Controllers
                     id = r.Id,
                     musteriId = r.MusteriId,
                     baslangic = r.BaslangicTarihi.ToString("yyyy-MM-ddTHH:mm"),
-                    bitis = r.BitisTarihi.ToString("yyyy-MM-ddTHH:mm"),
+                    bitis = bitis.ToString("yyyy-MM-ddTHH:mm"),
                     tarihFormatli = r.BaslangicTarihi.ToString("dd MMMM yyyy dddd"),
-                    saatFormatli = r.BaslangicTarihi.ToString("HH:mm"),
+                    saatFormatli = $"{r.BaslangicTarihi:HH:mm} - {bitis:HH:mm}",
                     islemTuru = r.SozlesmeDetayi,
                     mekanId = r.MekanId,
                     mekanAd = r.Mekan != null ? r.Mekan.MekanAdi : "-",
                     paketId = r.PaketId,
+                    paketAd = r.Paket != null ? $"{r.Paket.PaketAdi} ({r.Paket.Fiyat:N0} ₺)" : "Standart / Özel Anlaşma",
                     toplamUcret = r.ToplamUcret,
                     alinanKapora = r.AlinanKapora,
                     kalanBakiye = r.ToplamUcret - r.AlinanKapora,
                     notlar = r.Notlar,
-                    kisiSayisi = r.KisiSayisi,
                     anaAd = r.Musteri?.AdSoyad,
                     telefon = r.Musteri?.Telefon,
+                    email = r.Musteri?.Email, // GÜNCELLENDİ: Email artık detaya eksiksiz gönderiliyor
                     gelinAd = r.Musteri?.GelinAdSoyad,
                     damatAd = r.Musteri?.DamatAdSoyad,
+                    gelinTC = r.Musteri?.GelinTC,
+                    damatTC = r.Musteri?.DamatTC,
                     gelinTel = r.Musteri?.GelinTelefon,
                     damatTel = r.Musteri?.DamatTelefon,
-                    sozlesmeDosya = r.SozlesmeDosyaYolu, // SÖZLEŞME EKLENDİ
+                    gelinAdres = r.Musteri?.GelinAdres,
+                    damatAdres = r.Musteri?.DamatAdres,
+                    sozlesmeDosya = r.SozlesmeDosyaYolu,
 
                     odemeler = r.Odemeler?.OrderByDescending(o => o.Tarih).Select(o => new { tarih = o.Tarih.ToString("dd.MM.yyyy HH:mm"), tutar = o.Tutar, tur = o.IslemTuru, yontem = o.OdemeYontemi }).ToList(),
                     personeller = r.Personeller?.Select(p => new { id = p.Id, adSoyad = p.AdSoyad, gorev = p.Gorevi, ucret = p.GunlukUcret, telefon = p.Telefon }).ToList()
@@ -218,10 +315,8 @@ namespace DugunTakipSistemi.Controllers
             return Json(new { success = false });
         }
 
-        // --- MEKAN İŞLEMLERİ ---
         [HttpGet] public IActionResult GetMekanlar() { return Json(_context.Mekanlar.Select(m => new { id = m.Id, mekanAdi = m.MekanAdi }).ToList()); }
-        [HttpPost] public IActionResult MekanEkle([FromBody] Mekan yeniMekan) { if (yeniMekan != null && !string.IsNullOrEmpty(yeniMekan.MekanAdi)) { _context.Mekanlar.Add(yeniMekan); _context.SaveChanges(); return Json(new { success = true }); } return Json(new { success = false }); }
-        [HttpPost] public IActionResult MekanSil(int id) { var mekan = _context.Mekanlar.Find(id); if (mekan == null) return Json(new { success = false }); if (_context.Rezervasyonlar.Any(r => r.MekanId == id)) return Json(new { success = false, mesaj = "Mekana ait rezervasyon var!" }); _context.Mekanlar.Remove(mekan); _context.SaveChanges(); return Json(new { success = true }); }
+        [HttpGet] public IActionResult GetPaketler() { return Json(_context.Paketler.Select(p => new { id = p.Id, paketAdi = p.PaketAdi, fiyat = p.Fiyat, sureSaat = p.SureSaat }).ToList()); }
 
         // --- PERSONEL İŞLEMLERİ ---
         [HttpGet] public IActionResult GetPersoneller() { return Json(_context.Personeller.Select(p => new { id = p.Id, adSoyad = p.AdSoyad, gorev = p.Gorevi, ucret = p.GunlukUcret }).ToList()); }
@@ -233,7 +328,7 @@ namespace DugunTakipSistemi.Controllers
         [HttpGet]
         public IActionResult SozlesmeYazdir(int id)
         {
-            var rez = _context.Rezervasyonlar.Include(x => x.Musteri).Include(x => x.Mekan).FirstOrDefault(x => x.Id == id);
+            var rez = _context.Rezervasyonlar.Include(x => x.Musteri).Include(x => x.Mekan).Include(x => x.Paket).FirstOrDefault(x => x.Id == id);
             if (rez == null) return NotFound("Bulunamadı");
             return View(rez);
         }

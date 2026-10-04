@@ -6,46 +6,205 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
 <style>
-    .fc-theme-standard td, .fc-theme-standard th { border-color: #e5eaef; }
-    .fc-header-toolbar { margin-bottom: 1.5rem !important; }
-    .fc-toolbar-title { font-weight: 700; color: #1e1e2d; font-size: 1.5rem !important; }
-    .fc-button-primary { background-color: #1e2235 !important; border-color: #1e2235 !important; }
-    .fc-button-primary:hover { background-color: #2b304a !important; }
-    .fc-day-today { background-color: #fcfcfc !important; }
-    .fc-daygrid-event-harness { margin-bottom: 4px; }
-    .fc-event { background: transparent !important; border: none !important; }
+    .fc-theme-standard td, .fc-theme-standard th {
+        border-color: #e5eaef;
+    }
 
-    .genix-event-box { background: #fff; border: 1px solid #e0e5eb; border-radius: 8px; padding: 6px 8px; position: relative; min-height: 50px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); cursor: pointer; display: flex; flex-direction: column; justify-content: flex-start; transition: all 0.2s; }
-    .genix-event-box:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-color: #cdd4dc; }
-    .event-title-row { display: flex; align-items: center; font-weight: 700; font-size: 0.8rem; color: #333; margin-bottom: 2px; }
-    .event-subtitle { font-size: 0.7rem; color: #6c757d; font-weight: 500;}
-    .time-icon { font-size: 0.9rem; margin-right: 5px; }
-    .time-icon.night { color: #1e2235; }
-    .time-icon.day { color: #ffc107; }
-    .initial-badge { font-size: 0.55rem; padding: 2px 4px; border-radius: 4px; margin-left: 5px; background: #e0e6ed; color: #555; font-weight:bold; }
-    .price-tag { position: absolute; bottom: 5px; right: 5px; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 12px; color: #fff; }
-    .price-tag.red { background-color: #f1416c; }
-    .price-tag.green { background-color: #50cd89; }
+    .fc-header-toolbar {
+        margin-bottom: 1.5rem !important;
+    }
 
-    .modal-genix-bg { background-color: #f4f5f8; }
-    .modal-genix-header { background-color: #1e2235; color: #fff; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem; padding: 1.25rem 1.5rem; }
-    .g-summary-card { background: #fff; border: 1px solid #e9ecef; border-radius: 0.75rem; padding: 1rem; position: relative; display: flex; align-items: center; justify-content: space-between; }
-    .g-summary-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-right: 15px;}
-    .g-panel { background: #fff; border-radius: 0.75rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 1rem; overflow: hidden; border: 1px solid #f0f0f0; }
-    .g-panel-header { background-color: #1e2235; color: #fff; padding: 0.75rem 1.25rem; font-weight: 600; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
-    .g-btn-green { background-color: #198754; color: #fff; font-weight: bold; font-size: 0.75rem; padding: 5px 10px; border-radius: 6px; border:none;}
-    .g-table th { font-size: 0.7rem; text-transform: uppercase; color: #a1a5b7; font-weight: 600; }
-    .g-table td { font-size: 0.8rem; font-weight: 500; color: #3f4254; vertical-align: middle; }
-    
-    .personel-item { border: 1px solid #e9ecef; border-radius: 8px; padding: 10px; display: flex; align-items: center; }
-    .personel-avatar { width: 35px; height: 35px; border-radius: 50%; background-color: #e9c46a; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px; }
+    .fc-toolbar-title {
+        font-weight: 700;
+        color: #1e1e2d;
+        font-size: 1.4rem !important;
+        text-transform: capitalize;
+    }
+
+    .fc-button-primary {
+        background-color: #1e2235 !important;
+        border-color: #1e2235 !important;
+    }
+
+        .fc-button-primary:hover, .fc-button-primary.fc-button-active {
+            background-color: #0d6efd !important;
+            border-color: #0d6efd !important;
+        }
+
+    .fc-day-today {
+        background-color: #f8faff !important;
+    }
+
+    .fc-daygrid-event-harness {
+        margin-bottom: 4px;
+    }
+
+    .fc-event {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .fc-timegrid-event {
+        min-height: 55px;
+    }
+
+    .genix-event-box {
+        background: #fff;
+        border: 1px solid #e0e5eb;
+        border-left: 4px solid #1e2235;
+        border-radius: 6px;
+        padding: 6px 8px;
+        position: relative;
+        min-height: 54px;
+        height: 100%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        transition: all 0.2s;
+        overflow: hidden;
+    }
+
+        .genix-event-box:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+            border-color: #b0b8c5;
+        }
+
+    .event-title-row {
+        display: flex;
+        align-items: center;
+        font-weight: 700;
+        font-size: 0.78rem;
+        color: #1e293b;
+        margin-bottom: 2px;
+    }
+
+    .event-subtitle {
+        font-size: 0.68rem;
+        color: #64748b;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-right: 45px;
+    }
+
+    .time-icon {
+        font-size: 0.85rem;
+        margin-right: 5px;
+    }
+
+        .time-icon.night {
+            color: #1e2235;
+        }
+
+        .time-icon.day {
+            color: #f59e0b;
+        }
+
+    .price-tag {
+        position: absolute;
+        bottom: 4px;
+        right: 5px;
+        font-size: 0.63rem;
+        font-weight: 800;
+        padding: 1px 6px;
+        border-radius: 10px;
+        color: #fff;
+    }
+
+        .price-tag.red {
+            background-color: #f1416c;
+        }
+
+        .price-tag.green {
+            background-color: #50cd89;
+        }
+
+    .modal-genix-bg {
+        background-color: #f4f5f8;
+    }
+
+    .modal-genix-header {
+        background-color: #1e2235;
+        color: #fff;
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .g-summary-card {
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .g-summary-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        margin-right: 15px;
+    }
+
+    .g-panel {
+        background: #fff;
+        border-radius: 0.75rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        margin-bottom: 1rem;
+        overflow: hidden;
+        border: 1px solid #f0f0f0;
+    }
+
+    .g-panel-header {
+        background-color: #1e2235;
+        color: #fff;
+        padding: 0.75rem 1.25rem;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .g-btn-green {
+        background-color: #198754;
+        color: #fff;
+        font-weight: bold;
+        font-size: 0.75rem;
+        padding: 5px 10px;
+        border-radius: 6px;
+        border: none;
+    }
+
+    .g-table th {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: #a1a5b7;
+        font-weight: 600;
+    }
+
+    .g-table td {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #3f4254;
+        vertical-align: middle;
+    }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="text-primary fw-bold"><i class="fa-regular fa-calendar-check me-2"></i> Operasyon Takvimi</h4>
+    <h4 class="text-primary fw-bold mb-0"><i class="fa-regular fa-calendar-check me-2"></i> Operasyon & Çekim Takvimi</h4>
     <div>
-        <button class="btn btn-outline-secondary shadow-sm me-2" data-bs-toggle="modal" data-bs-target="#mekanModal"><i class="fa-solid fa-building me-1"></i> Mekan Yönetimi</button>
-        <button class="btn btn-primary shadow-sm" onclick="yeniRezervasyonAc()"><i class="fa-solid fa-plus me-1"></i> Yeni Kayıt</button>
+        <button class="btn btn-primary shadow-sm fw-semibold px-3" onclick="yeniRezervasyonAc()"><i class="fa-solid fa-plus me-1"></i> Yeni Rezervasyon Kaydı</button>
     </div>
 </div>
 
@@ -55,26 +214,22 @@
     </div>
 </div>
 
-<!-- ========================================== -->
-<!-- 1. DETAY (DASHBOARD) MODALI                -->
-<!-- ========================================== -->
+<!-- 1. DETAY MODALI -->
 <div class="modal fade" id="detayModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content modal-genix-bg">
-            <div class="modal-genix-header d-flex justify-content-between align-items-center">
+            <div class="modal-genix-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div class="d-flex align-items-center">
-                    <div class="me-3 fs-1 text-warning"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="me-3 fs-1 text-warning"><i class="fa-solid fa-camera-retro"></i></div>
                     <div>
                         <h4 class="mb-1 fw-bold text-white d-flex align-items-center">
-                            <span id="dCiftIsim">Müşteri Adı</span> 
-                            <span class="badge bg-light text-dark ms-3 rounded-pill" style="font-size: 0.7rem;" id="dIslemTuruBadge">Düğün</span>
+                            <span id="dCiftIsim">Müşteri Adı</span>
                         </h4>
-                        <small style="color: #a2a3b7; font-size: 0.8rem;">
-                            <span id="dTarihUzun">Tarih</span> &middot; <span id="dMekanAdiUst">Mekan</span>
+                        <small style="color: #a2a3b7; font-size: 0.85rem;">
+                            <i class="fa-regular fa-calendar me-1"></i> <span id="dTarihUzun">Tarih</span> &middot; <i class="fa-solid fa-location-dot ms-1 me-1 text-warning"></i> <span id="dMekanAdiUst" class="text-white fw-semibold">Mekan</span>
                         </small>
                     </div>
                 </div>
-                <!-- SÖZLEŞME BUTONLARI EKLENDİ -->
                 <div>
                     <input type="file" id="sozlesmeDosyaInput" style="display:none;" onchange="sozlesmeYukle(this)" accept=".pdf,.jpg,.jpeg,.png">
                     <a href="#" target="_blank" class="btn btn-success btn-sm me-2 px-3 py-2 fw-bold" id="btnSozlesmeIndir" style="display:none;"><i class="fa-solid fa-download me-1"></i> İmzalıyı Gör</a>
@@ -98,7 +253,7 @@
                         <div class="g-summary-card">
                             <div class="d-flex align-items-center">
                                 <div class="g-summary-icon" style="background:#e8fff3; color:#50cd89;"><i class="fa-regular fa-circle-check"></i></div>
-                                <div><small class="text-muted fw-bold d-block mb-1" style="font-size: 0.65rem;">KAPORA</small><h4 class="mb-0 fw-bolder text-dark" id="dKapora">0 TL</h4></div>
+                                <div><small class="text-muted fw-bold d-block mb-1" style="font-size: 0.65rem;">ALINAN TAHSİLAT</small><h4 class="mb-0 fw-bolder text-dark" id="dKapora">0 TL</h4></div>
                             </div>
                         </div>
                     </div>
@@ -106,7 +261,7 @@
                         <div class="g-summary-card">
                             <div class="d-flex align-items-center">
                                 <div class="g-summary-icon" style="background:#fff5f8; color:#f1416c;"><i class="fa-solid fa-hourglass-half"></i></div>
-                                <div><small class="text-muted fw-bold d-block mb-1" style="font-size: 0.65rem;">KALAN</small><h4 class="mb-0 fw-bolder text-danger" id="dKalan">0 TL</h4></div>
+                                <div><small class="text-muted fw-bold d-block mb-1" style="font-size: 0.65rem;">KALAN BORÇ</small><h4 class="mb-0 fw-bolder text-danger" id="dKalan">0 TL</h4></div>
                             </div>
                             <button class="g-btn-green shadow-sm" data-bs-toggle="modal" data-bs-target="#odemeAlModal"><i class="fa-solid fa-hand-holding-dollar me-1"></i> Ödeme Al</button>
                         </div>
@@ -117,16 +272,18 @@
                     <div class="col-md-7">
                         <div class="g-panel">
                             <div class="g-panel-header">
-                                <span><i class="fa-solid fa-list-ul me-2"></i> ÖZET</span>
-                                <button class="btn btn-sm btn-outline-light py-0 px-2" style="font-size: 0.7rem; border-radius:20px;" onclick="notGuncellePrompt()">+ Not</button>
+                                <span><i class="fa-solid fa-list-ul me-2"></i> ÇEKİM ÖZETİ</span>
+                                <div>
+                                    <button class="btn btn-sm btn-warning text-dark fw-bold py-0 px-2 me-1" style="font-size: 0.7rem; border-radius:20px;" onclick="rezervasyonDuzenle()"><i class="fa-solid fa-pen me-1"></i> Düzenle</button>
+                                    <button class="btn btn-sm btn-outline-light py-0 px-2" style="font-size: 0.7rem; border-radius:20px;" onclick="notGuncellePrompt()">+ Not Düzenle</button>
+                                </div>
                             </div>
                             <div class="card-body p-4">
                                 <div class="row g-4">
-                                    <div class="col-6"><small class="text-muted d-block fw-bold mb-1" style="font-size:0.65rem;">TARİH</small><span class="fw-bold text-dark fs-6" id="dOzetTarih"></span></div>
-                                    <div class="col-6"><small class="text-muted d-block fw-bold mb-1" style="font-size:0.65rem;">TÜR</small><span class="fw-bold text-dark fs-6" id="dOzetTur"></span></div>
-                                    <div class="col-6"><small class="text-muted d-block fw-bold mb-1" style="font-size:0.65rem;">YER</small><span class="fw-bold text-dark fs-6" id="dOzetMekan"></span></div>
-                                    <div class="col-6"><small class="text-muted d-block fw-bold mb-1" style="font-size:0.65rem;">KİŞİ SAYISI</small><span class="fw-bold text-dark fs-6" id="dOzetKisiSayisi">Belirtilmedi</span></div>
-                                    <div class="col-12"><small class="text-muted d-block fw-bold mb-1" style="font-size:0.65rem;">NOTLAR</small><span class="text-muted" style="font-size:0.85rem;" id="dOzetNotlar">-</span></div>
+                                    <div class="col-6"><small class="text-muted d-block fw-bold mb-1" style="font-size:0.65rem;">TARİH & SAAT</small><span class="fw-bold text-dark" id="dOzetTarih"></span></div>
+                                    <div class="col-6"><small class="text-muted d-block fw-bold mb-1" style="font-size:0.65rem;">SEÇİLEN PAKET</small><span class="fw-bold text-primary" id="dOzetPaket">Standart</span></div>
+                                    <div class="col-12"><small class="text-muted d-block fw-bold mb-1" style="font-size:0.65rem;">ÇEKİM YERİ / MEKANLAR</small><span class="fw-bold text-danger" id="dOzetMekan"></span></div>
+                                    <div class="col-12"><small class="text-muted d-block fw-bold mb-1" style="font-size:0.65rem;">NOTLAR</small><span class="text-dark" style="font-size:0.85rem;" id="dOzetNotlar">-</span></div>
                                 </div>
                             </div>
                         </div>
@@ -135,9 +292,9 @@
                             <div class="g-panel-header"><span><i class="fa-solid fa-stop text-warning me-2"></i> ÖDEME GEÇMİŞİ (<span id="dOdemeSayisi">0</span> KAYIT)</span></div>
                             <div class="card-body p-0 table-responsive">
                                 <table class="table g-table table-hover mb-0">
-                                    <thead class="bg-light"><tr><th class="ps-4">TARİH</th><th>TÜR</th><th>TUTAR</th><th>AÇIKLAMA</th><th class="text-end pe-4">İŞLEM</th></tr></thead>
+                                    <thead class="bg-light"><tr><th class="ps-4">TARİH</th><th>YÖNTEM</th><th>TUTAR</th><th>AÇIKLAMA</th></tr></thead>
                                     <tbody id="dOdemeGecmisiTbody"></tbody>
-                                    <tfoot style="background-color:#f9f9f9;"><tr><th colspan="2" class="ps-4 fs-6 text-dark fw-bolder">Toplam Tahsilat</th><th colspan="3" class="text-success fs-5 fw-bolder text-end pe-4" id="dTabloToplamTahsilat">0 TL</th></tr></tfoot>
+                                    <tfoot style="background-color:#f9f9f9;"><tr><th colspan="2" class="ps-4 fs-6 text-dark fw-bolder">Toplam Tahsilat</th><th colspan="2" class="text-success fs-5 fw-bolder text-end pe-4" id="dTabloToplamTahsilat">0 TL</th></tr></tfoot>
                                 </table>
                             </div>
                         </div>
@@ -145,23 +302,39 @@
 
                     <div class="col-md-5">
                         <div class="g-panel">
-                            <div class="g-panel-header"><span><i class="fa-solid fa-phone me-2 text-white-50"></i> MÜŞTERİ İLETİŞİM</span></div>
+                            <div class="g-panel-header"><span><i class="fa-solid fa-address-card me-2 text-white-50"></i> MÜŞTERİ & ÇİFT BİLGİLERİ</span></div>
                             <div class="card-body p-3">
-                                <a href="#" id="dIletisimAraBtn" class="btn btn-light w-100 text-primary fw-bold py-2 text-start fs-5"><i class="fa-solid fa-phone-volume me-2"></i> <span id="dIletisimTelefonYazi"></span></a>
-                            </div>
-                        </div>
+                                <div class="mb-2">
+                                    <small class="text-muted fw-bold d-block" style="font-size:0.65rem;">SÖZLEŞME SAHİBİ</small>
+                                    <div class="fw-bold text-dark" id="dMusteriAnaAd">-</div>
+                                </div>
 
-                        <div class="g-panel">
-                            <div class="g-panel-header">
-                                <span><i class="fa-solid fa-id-badge me-2 text-white-50"></i> GÖREVLİ PERSONEL & EKİP</span>
-                                <div><button class="btn btn-sm btn-outline-light py-0 px-2 me-2" style="font-size:0.7rem; border-radius:20px;" onclick="personelEkleAlert()">+ Ekle</button><span class="badge bg-secondary rounded-circle" id="dPersonelSayisi">0</span></div>
+                                <!-- TELEFON BUTONU -->
+                                <a href="#" id="dIletisimAraBtn" class="btn btn-light border w-100 text-primary fw-bold py-2 text-start fs-6 mb-2">
+                                    <i class="fa-solid fa-phone-volume me-2"></i> <span id="dIletisimTelefonYazi"></span>
+                                </a>
+
+                                <!-- E-POSTA BUTONU (YENİ EKLENDİ) -->
+                                <a href="#" id="dIletisimEmailBtn" class="btn btn-light border w-100 text-dark fw-semibold py-2 text-start mb-3" style="font-size: 0.88rem;">
+                                    <i class="fa-solid fa-envelope me-2 text-primary"></i> <span id="dIletisimEmailYazi">E-posta Yok</span>
+                                </a>
+
+                                <div class="row g-2 border-top pt-2" id="dCiftDetayKutusu">
+                                    <div class="col-12 mb-2">
+                                        <small class="text-muted fw-bold d-block" style="font-size:0.65rem;">GELİN BİLGİSİ</small>
+                                        <div class="fw-semibold small text-dark" id="dGelinBilgi">-</div>
+                                    </div>
+                                    <div class="col-12">
+                                        <small class="text-muted fw-bold d-block" style="font-size:0.65rem;">DAMAT BİLGİSİ</small>
+                                        <div class="fw-semibold small text-dark" id="dDamatBilgi">-</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-body p-3" id="dPersonelListesi"><div class="text-muted small text-center py-2">Henüz personel atanmamış.</div></div>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="modal-footer bg-light border-0 d-flex justify-content-end align-items-center px-4 py-3">
                 <button class="btn btn-white text-muted fw-bold border shadow-sm px-4 py-2 me-2" data-bs-dismiss="modal" style="background:#fff;"><i class="fa-solid fa-xmark me-1"></i> Kapat</button>
                 <button class="btn btn-dark fw-bold shadow-sm px-4 py-2" onclick="rezervasyonDuzenle()"><i class="fa-solid fa-pen me-1"></i> Düzenle</button>
@@ -170,80 +343,192 @@
     </div>
 </div>
 
-<!-- ========================================== -->
-<!-- 2. YENİ REZERVASYON FORMU                  -->
-<!-- ========================================== -->
+<!-- 2. YENİ / DÜZENLE REZERVASYON FORMU -->
 <div class="modal fade" id="yeniRezervasyonModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header border-0 bg-light">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-bottom bg-light">
                 <h5 class="modal-title fw-bold text-primary"><i class="fa-solid fa-calendar-plus me-2"></i> Rezervasyon Kaydı</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="formYeniRezervasyon">
-                    <input type="hidden" name="RezervasyonId" id="formRezervasyonId"> 
-                    
+                <form id="formYeniRezervasyon" autocomplete="off">
+                    <input type="hidden" name="RezervasyonId" id="formRezervasyonId">
+
                     <div class="row g-4">
                         <div class="col-md-6 border-end">
                             <h6 class="fw-bold text-dark mb-3">İletişim Bilgileri</h6>
-                            <div class="row g-2 mb-3">
-                                <div class="col-md-6"><input type="text" class="form-control" name="AnaAdSoyad" placeholder="Sözleşme Sahibi (Müşteri) *" required></div>
-                                <div class="col-md-6"><input type="text" class="form-control" name="AnaTelefon" placeholder="Müşteri Telefonu *" required></div>
-                            </div>
-                            <h6 class="fw-bold text-danger mt-4 mb-3">Çift Bilgileri (Varsa)</h6>
                             <div class="row g-2 mb-2">
-                                <div class="col-md-6"><input type="text" class="form-control" name="GelinAd" placeholder="Gelin Ad Soyad"></div>
-                                <div class="col-md-6"><input type="text" class="form-control" name="DamatAd" placeholder="Damat Ad Soyad"></div>
+                                <div class="col-md-6">
+                                    <label class="small text-muted fw-semibold">Sözleşme Sahibi (Müşteri) *</label>
+                                    <input type="text" class="form-control" name="AnaAdSoyad" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="small text-muted fw-semibold">Telefon No *</label>
+                                    <input type="tel" class="form-control" name="AnaTelefon" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                </div>
+                            </div>
+
+                            <!-- E-POSTA INPUTU (YENİ EKLENDİ) -->
+                            <div class="row g-2 mb-3">
+                                <div class="col-12">
+                                    <label class="small text-muted fw-semibold">E-Posta Adresi (İsteğe Bağlı)</label>
+                                    <input type="email" class="form-control" name="Email" placeholder="ornek@gmail.com">
+                                </div>
+                            </div>
+
+                            <h6 class="fw-bold text-danger mt-3 mb-3">Çift Bilgileri</h6>
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-6">
+                                    <label class="small text-muted fw-semibold">Gelin Ad Soyad</label>
+                                    <input type="text" class="form-control" name="GelinAd">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="small text-muted fw-semibold">Damat Ad Soyad</label>
+                                    <input type="text" class="form-control" name="DamatAd">
+                                </div>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-6">
+                                    <label class="small text-muted fw-semibold">Gelin T.C. Kimlik No</label>
+                                    <input type="text" class="form-control" name="GelinTC" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="small text-muted fw-semibold">Damat T.C. Kimlik No</label>
+                                    <input type="text" class="form-control" name="DamatTC" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                </div>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-6">
+                                    <label class="small text-muted fw-semibold">Gelin Telefon No</label>
+                                    <input type="tel" class="form-control" name="GelinTel" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="small text-muted fw-semibold">Damat Telefon No</label>
+                                    <input type="tel" class="form-control" name="DamatTel" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                </div>
                             </div>
                             <div class="row g-2">
-                                <div class="col-md-6"><input type="text" class="form-control" name="GelinTel" placeholder="Gelin Telefon No"></div>
-                                <div class="col-md-6"><input type="text" class="form-control" name="DamatTel" placeholder="Damat Telefon No"></div>
+                                <div class="col-md-6">
+                                    <label class="small text-muted fw-semibold">Gelin Evi Adresi</label>
+                                    <textarea class="form-control" name="GelinAdres" rows="2" placeholder="Gelin alma / hazırlık adresi..."></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="small text-muted fw-semibold">Damat Evi Adresi</label>
+                                    <textarea class="form-control" name="DamatAdres" rows="2" placeholder="Damat evi adresi..."></textarea>
+                                </div>
                             </div>
                         </div>
+
                         <div class="col-md-6">
-                            <h6 class="fw-bold text-primary mb-3">Organizasyon Detayları</h6>
+                            <h6 class="fw-bold text-primary mb-3">Çekim Detayları</h6>
                             <div class="row g-2 mb-3">
-                                <div class="col-md-6"><label class="small">Başlangıç *</label><input type="datetime-local" class="form-control" id="baslangicInput" name="Baslangic" required></div>
-                                <div class="col-md-6"><label class="small">Bitiş *</label><input type="datetime-local" class="form-control" id="bitisInput" name="Bitis" required></div>
+                                <div class="col-md-6">
+                                    <label class="small text-muted fw-semibold">Başlangıç *</label>
+                                    <input type="datetime-local" class="form-control" id="baslangicInput" name="Baslangic" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="small text-muted fw-semibold">Bitiş *</label>
+                                    <input type="datetime-local" class="form-control" id="bitisInput" name="Bitis" required>
+                                </div>
                             </div>
+
                             <div class="row g-2 mb-3">
-                                <div class="col-md-4">
-                                    <label class="small">Tür</label>
-                                    <select class="form-select" name="IslemTuru">
-                                        <option value="Düğün">Düğün</option><option value="Kına">Kına</option><option value="Nişan">Nişan</option><option value="Sünnet">Sünnet</option>
+                                <div class="col-md-12">
+                                    <label class="small text-dark fw-semibold">Çekim Yeri / Mekan *</label>
+                                    <input type="text" class="form-control" name="MekanAdi" id="yeniMekanInput" list="mekanOnerileri" placeholder="Örn: Plato, Dış Mekan, Salon..." required>
+                                    <datalist id="mekanOnerileri">
+                                        @if (ViewBag.Mekanlar != null)
+                                        {
+                                            foreach (var m in ViewBag.Mekanlar)
+                                            {
+                                                <option value="@m.MekanAdi"></option>
+                                            }
+                                        }
+                                    </datalist>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-md-12">
+                                    <label class="small text-primary fw-semibold">Paket Seçimi</label>
+                                    <select class="form-select" name="PaketId" id="yeniPaketSelect" onchange="paketSecildi()">
+                                        <option value="" data-fiyat="0" data-sure="4">Seçiniz</option>
+                                        @if (ViewBag.Paketler != null)
+                                        {
+                                            foreach (var pkt in ViewBag.Paketler)
+                                            {
+                                                <option value="@pkt.Id" data-fiyat="@pkt.Fiyat.ToString(System.Globalization.CultureInfo.InvariantCulture)" data-sure="@pkt.SureSaat">
+                                                    @pkt.PaketAdi — @pkt.Fiyat.ToString("N0") ₺
+                                                </option>
+                                            }
+                                        }
                                     </select>
                                 </div>
-                                <div class="col-md-5"><label class="small">Mekan *</label><select class="form-select" name="MekanId" id="yeniMekanSelect" required></select></div>
-                                <div class="col-md-3"><label class="small">Kişi Sayısı</label><input type="number" class="form-control" name="KisiSayisi"></div>
                             </div>
+
                             <div class="row g-2 mb-3">
-                                <div class="col-md-12"><label class="small">Notlar</label><input type="text" class="form-control" name="Notlar" placeholder="Örn: Yemekli, açık büfe vs."></div>
+                                <div class="col-md-12">
+                                    <label class="small text-muted fw-semibold">Notlar</label>
+                                    <textarea class="form-control" name="Notlar" rows="2"></textarea>
+                                </div>
                             </div>
+
                             <div class="row g-2">
-                                <div class="col-md-6"><label class="small">Toplam Tutar (₺) *</label><input type="number" class="form-control fw-bold" name="PaketFiyati" required></div>
-                                <div class="col-md-6"><label class="small text-success">Kapora (₺)</label><input type="number" class="form-control fw-bold text-success" name="Kapora" value="0"></div>
+                                <div class="col-md-6">
+                                    <label class="small text-dark fw-bold">Toplam Tutar (₺) *</label>
+                                    <input type="number" class="form-control fw-bold" id="paketFiyatiInput" name="PaketFiyati" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="small text-success fw-bold">Alınan Kapora (₺)</label>
+                                    <input type="number" class="form-control fw-bold text-success" name="Kapora" value="0">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer border-0 bg-light">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                <button type="button" class="btn btn-primary" onclick="rezervasyonKaydet()">Kaydet</button>
+            <div class="modal-footer border-top bg-light">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary px-4 fw-bold" onclick="rezervasyonKaydet()"><i class="fa-solid fa-check me-1"></i> Kaydet</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ========================================== -->
-<!-- 3. DİĞER MODALLAR (Mekan, Tahsilat, Per)   -->
-<!-- ========================================== -->
-<div class="modal fade" id="mekanModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0 bg-light"><h5 class="modal-title fw-bold text-dark"><i class="fa-solid fa-building me-2"></i> Mekan Yönetimi</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><div class="input-group mb-4 shadow-sm"><input type="text" id="yeniMekanAdi" class="form-control" placeholder="Yeni Mekan (Örn: Teras Salon)"><button class="btn btn-primary" type="button" onclick="mekanEkle()">Ekle</button></div><ul class="list-group list-group-flush border rounded" id="mekanListesi"></ul></div></div></div></div>
-
-<div class="modal fade" id="odemeAlModal" tabindex="-1"><div class="modal-dialog modal-sm modal-dialog-centered" style="z-index: 1060;"><div class="modal-content border-0 shadow-lg"><div class="modal-header bg-success text-white border-0"><h6 class="modal-title fw-bold"><i class="fa-solid fa-cash-register me-1"></i> Ödeme Al</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="tahsilatRezId"><div class="mb-3"><label class="form-label small text-muted">Ödenecek Tutar (₺)</label><input type="number" class="form-control fw-bold text-success" id="tahsilatTutar" required></div><div class="mb-3"><label class="form-label small text-muted">Ödeme Yöntemi</label><select class="form-select" id="tahsilatYontem"><option value="Nakit">Nakit</option><option value="Kredi Kartı">Kredi Kartı</option><option value="Havale/EFT">Havale/EFT</option></select></div><div class="mb-2"><label class="form-label small text-muted">Açıklama (Opsiyonel)</label><input type="text" class="form-control" id="tahsilatAciklama" placeholder="Örn: Ara ödeme"></div></div><div class="modal-footer border-0"><button type="button" class="btn btn-success w-100" onclick="tahsilatKaydet()">Tahsilatı Kaydet</button></div></div></div></div>
-
-<div class="modal fade" id="personelAtaModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered" style="z-index: 1060;"><div class="modal-content border-0 shadow-lg"><div class="modal-header bg-dark text-white border-0"><h6 class="modal-title fw-bold"><i class="fa-solid fa-user-plus me-1"></i> Görevli Personel Ata</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="ataRezId"><div class="mb-4"><label class="form-label small text-muted">Sistemdeki Personellerden Seç</label><div class="input-group"><select class="form-select" id="personelSelect"></select><button class="btn btn-primary" onclick="personelAtaKaydet()">Ata</button></div></div><hr><h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-plus me-1"></i> Yeni Personel Oluştur</h6><div class="row g-2 mb-2"><div class="col-md-6"><input type="text" id="yeniPerAd" class="form-control form-control-sm" placeholder="Ad Soyad *"></div><div class="col-md-6"><input type="text" id="yeniPerTel" class="form-control form-control-sm" placeholder="Telefon"></div></div><div class="row g-2 mb-3"><div class="col-md-6"><input type="text" id="yeniPerGorev" class="form-control form-control-sm" placeholder="Görev (Örn: Garson) *"></div><div class="col-md-6"><input type="number" id="yeniPerUcret" class="form-control form-control-sm" placeholder="Yevmiye (₺)"></div></div><button class="btn btn-sm btn-outline-dark w-100" onclick="yeniPersonelEkle()">Kaydet ve Listeye Ekle</button></div></div></div></div>
+<!-- 3. ÖDEME AL MODALI -->
+<div class="modal fade" id="odemeAlModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered" style="z-index: 1060;">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-success text-white border-0">
+                <h6 class="modal-title fw-bold"><i class="fa-solid fa-cash-register me-1"></i> Ödeme Al</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="tahsilatRezId">
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Ödenecek Tutar (₺)</label>
+                    <input type="number" class="form-control fw-bold text-success" id="tahsilatTutar" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Ödeme Yöntemi</label>
+                    <select class="form-select" id="tahsilatYontem">
+                        <option value="Nakit">Nakit</option>
+                        <option value="Kredi Kartı">Kredi Kartı</option>
+                        <option value="Havale/EFT">Havale/EFT</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small text-muted">Açıklama</label>
+                    <input type="text" class="form-control" id="tahsilatAciklama">
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-success w-100" onclick="tahsilatKaydet()">Tahsilatı Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
@@ -251,16 +536,15 @@
 
     <script>
         var takvim;
-        var gecerliRezData = null; 
+        var gecerliRezData = null;
 
-        function formatPara(sayi) { 
+        function formatPara(sayi) {
             var num = parseFloat(sayi);
             if(isNaN(num)) num = 0;
-            return num.toLocaleString('tr-TR', { minimumFractionDigits: 0 }) + ' TL'; 
+            return num.toLocaleString('tr-TR', { minimumFractionDigits: 0 }) + ' TL';
         }
 
-        // SÖZLEŞME AÇMA VE YÜKLEME FONKSİYONLARI EKLENDİ
-        function sozlesmeAc() { 
+        function sozlesmeAc() {
             if(!gecerliRezData) return;
             window.open('/Rezervasyon/SozlesmeYazdir?id=' + gecerliRezData.id, '_blank');
         }
@@ -275,25 +559,63 @@
             $.ajax({
                 url: '/Rezervasyon/SozlesmeYukle', type: 'POST', data: formData, processData: false, contentType: false,
                 success: function(res) {
-                    if(res.success) { alert("İmzalı sözleşme başarıyla yüklendi!"); rezDetayGetir(gecerliRezData.id); } 
+                    if(res.success) { alert("İmzalı sözleşme başarıyla yüklendi!"); rezDetayGetir(gecerliRezData.id); }
                     else alert(res.mesaj);
                 }
             });
         }
 
+        function paketSecildi() {
+            var seciliOption = $('#yeniPaketSelect').find(':selected');
+            var fiyat = parseFloat(seciliOption.attr('data-fiyat')) || 0;
+            var sureSaat = parseInt(seciliOption.attr('data-sure')) || 4;
+
+            if (fiyat > 0) {
+                $('#paketFiyatiInput').val(fiyat);
+            }
+
+            var basVal = $('#baslangicInput').val();
+            if (basVal) {
+                var basDate = new Date(basVal);
+                basDate.setHours(basDate.getHours() + sureSaat);
+                var tzOffset = (new Date()).getTimezoneOffset() * 60000;
+                var localISOTime = (new Date(basDate - tzOffset)).toISOString().slice(0, 16);
+                $('#bitisInput').val(localISOTime);
+            }
+        }
+
         function yeniRezervasyonAc(tarihStr = null) {
             $('#formYeniRezervasyon')[0].reset();
-            $('#formRezervasyonId').val(''); 
+            $('#formRezervasyonId').val('');
+            $('#yeniPaketSelect').val('');
+            $('#yeniMekanInput').val('');
+            $('input[name="Email"]').val('');
+            $('textarea[name="GelinAdres"]').val('');
+            $('textarea[name="DamatAdres"]').val('');
+
             if(tarihStr) {
-                if(tarihStr.length === 10) { $('#baslangicInput').val(tarihStr + "T19:00"); $('#bitisInput').val(tarihStr + "T23:00"); } 
-                else { $('#baslangicInput').val(tarihStr.substring(0,16)); $('#bitisInput').val(tarihStr.substring(0,16)); }
+                if(tarihStr.length === 10) {
+                    $('#baslangicInput').val(tarihStr + "T14:00");
+                    $('#bitisInput').val(tarihStr + "T18:00");
+                } else {
+                    var bas = tarihStr.substring(0, 16);
+                    $('#baslangicInput').val(bas);
+                    var d = new Date(bas);
+                    d.setHours(d.getHours() + 4);
+                    var tzOffset = (new Date()).getTimezoneOffset() * 60000;
+                    $('#bitisInput').val((new Date(d - tzOffset)).toISOString().slice(0, 16));
+                }
+            } else {
+                var bugun = new Date().toISOString().slice(0, 10);
+                $('#baslangicInput').val(bugun + "T14:00");
+                $('#bitisInput').val(bugun + "T18:00");
             }
             $('#yeniRezervasyonModal').modal('show');
         }
 
         function notGuncellePrompt() {
             if(!gecerliRezData) return;
-            var yeniNot = prompt("Bu organizasyon için notunuzu yazın:", gecerliRezData.notlar || "");
+            var yeniNot = prompt("Notunuzu yazın:", gecerliRezData.notlar || "");
             if(yeniNot !== null) {
                 $.post('/Rezervasyon/NotGuncelle', { id: gecerliRezData.id, not: yeniNot }, function(res) {
                     if(res.success) { rezDetayGetir(gecerliRezData.id); takvim.refetchEvents(); }
@@ -306,58 +628,70 @@
             $('#formRezervasyonId').val(gecerliRezData.id);
             $('input[name="AnaAdSoyad"]').val(gecerliRezData.anaAd);
             $('input[name="AnaTelefon"]').val(gecerliRezData.telefon);
+            $('input[name="Email"]').val(gecerliRezData.email || '');
             $('input[name="GelinAd"]').val(gecerliRezData.gelinAd);
             $('input[name="DamatAd"]').val(gecerliRezData.damatAd);
+            $('input[name="GelinTC"]').val(gecerliRezData.gelinTC);
+            $('input[name="DamatTC"]').val(gecerliRezData.damatTC);
             $('input[name="GelinTel"]').val(gecerliRezData.gelinTel);
             $('input[name="DamatTel"]').val(gecerliRezData.damatTel);
+            $('textarea[name="GelinAdres"]').val(gecerliRezData.gelinAdres || '');
+            $('textarea[name="DamatAdres"]').val(gecerliRezData.damatAdres || '');
             $('input[name="Baslangic"]').val(gecerliRezData.baslangic);
             $('input[name="Bitis"]').val(gecerliRezData.bitis);
-            $('select[name="IslemTuru"]').val(gecerliRezData.islemTuru);
-            $('#yeniMekanSelect').val(gecerliRezData.mekanId);
+            $('#yeniMekanInput').val(gecerliRezData.mekanAd !== '-' ? gecerliRezData.mekanAd : '');
+            $('#yeniPaketSelect').val(gecerliRezData.paketId || '');
             $('input[name="PaketFiyati"]').val(gecerliRezData.toplamUcret);
             $('input[name="Kapora"]').val(gecerliRezData.alinanKapora);
-            $('input[name="KisiSayisi"]').val(gecerliRezData.kisiSayisi);
-            $('input[name="Notlar"]').val(gecerliRezData.notlar);
+            $('textarea[name="Notlar"]').val(gecerliRezData.notlar);
             $('#detayModal').modal('hide');
             $('#yeniRezervasyonModal').modal('show');
         }
 
         $(document).ready(function () {
-            mekanlariYukle();
-
             var calendarEl = document.getElementById('calendar');
             takvim = new FullCalendar.Calendar(calendarEl, {
                 locale: 'tr',
                 initialView: 'dayGridMonth',
-                headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek' },
-                buttonText: { today: 'Bugün', month: 'Ay', week: 'Hafta' },
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                buttonText: {
+                    today: 'Bugün',
+                    month: 'Ay',
+                    week: 'Hafta',
+                    day: 'Gün'
+                },
+                slotMinTime: '08:00:00',
+                slotMaxTime: '24:00:00',
+                allDaySlot: false,
+                dayMaxEvents: false,
                 events: '/Rezervasyon/GetRezervasyonlar',
-                
+
                 dateClick: function(info) {
-                    var bugun = new Date(); bugun.setHours(0,0,0,0);
-                    if (info.date < bugun) { alert("Geçmiş tarihe yeni kayıt ekleyemezsiniz!"); return; }
                     yeniRezervasyonAc(info.dateStr);
                 },
 
                 eventContent: function(arg) {
                     try {
                         var p = arg.event.extendedProps || {};
-                        var saat = arg.event.start ? arg.event.start.getHours() : 12;
+                        var saat = arg.event.start ? arg.event.start.getHours() : 14;
+                        var saatText = arg.event.start ? arg.event.start.toTimeString().substring(0,5) : '';
                         var isNight = (saat >= 18 || saat < 5);
                         var iconClass = isNight ? 'fa-solid fa-moon time-icon night' : 'fa-solid fa-sun time-icon day';
                         var kalan = parseFloat(p.kalan) || 0;
                         var fiyatRenk = (kalan > 0) ? 'red' : 'green';
-                        var mekanAd = p.mekan ? p.mekan : "YK";
-                        var mekanKisa = mekanAd.length >= 2 ? mekanAd.substring(0,2).toUpperCase() : mekanAd.toUpperCase();
-                        
+                        var mekanAd = p.mekan ? p.mekan : "";
+
                         var html = `
                             <div class="genix-event-box">
                                 <div class="event-title-row">
-                                    <i class="${iconClass}"></i> 
-                                    <span class="text-truncate d-inline-block" style="max-width:calc(100% - 30px);">${arg.event.title}</span>
-                                    <span class="initial-badge text-truncate">${mekanKisa}</span>
+                                    <i class="${iconClass}"></i>
+                                    <span class="text-truncate d-inline-block" style="max-width:100%;">${arg.event.title}</span>
                                 </div>
-                                <div class="event-subtitle">${p.islemTuru || '-'}</div>
+                                <div class="event-subtitle" title="${mekanAd}">${saatText} &middot; ${mekanAd ? mekanAd : 'Mekan Belirtilmedi'}</div>
                                 <div class="price-tag ${fiyatRenk}">₺ ${formatPara(p.toplam).replace(" TL","")}</div>
                             </div>
                         `;
@@ -369,13 +703,18 @@
                 eventClick: function (info) { rezDetayGetir(info.event.id); }
             });
             takvim.render();
+
+            var seciliId = '@ViewBag.SeciliRezId';
+            if (seciliId && seciliId !== '') {
+                rezDetayGetir(seciliId);
+            }
         });
 
         function rezDetayGetir(id) {
             $.get('/Rezervasyon/GetRezervasyonDetay?id=' + id, function (res) {
                 if(res.success) {
                     var r = res.data;
-                    gecerliRezData = r; 
+                    gecerliRezData = r;
 
                     var ciftAd = "";
                     if(r.gelinAd && r.damatAd) ciftAd = r.gelinAd + ' & ' + r.damatAd;
@@ -384,25 +723,37 @@
                     else ciftAd = r.anaAd || 'İsimsiz';
 
                     $('#dCiftIsim').text(ciftAd);
-                    $('#dIslemTuruBadge').text(r.islemTuru || 'Organizasyon');
                     $('#dTarihUzun').text(r.tarihFormatli || '-');
                     $('#dMekanAdiUst').text(r.mekanAd || '-');
-                    
+
                     $('#dToplamTutar').text(formatPara(r.toplamUcret));
                     $('#dKapora').text(formatPara(r.alinanKapora));
                     $('#dKalan').text(formatPara(r.kalanBakiye));
-                    $('#tahsilatRezId').val(id); 
+                    $('#tahsilatRezId').val(id);
 
-                    $('#dOzetTarih').text((r.tarihFormatli || '') + ' saat ' + (r.saatFormatli || ''));
-                    $('#dOzetTur').text(r.islemTuru || '-');
+                    $('#dOzetTarih').text((r.tarihFormatli || '') + ' (' + (r.saatFormatli || '') + ')');
                     $('#dOzetMekan').text(r.mekanAd || '-');
-                    $('#dOzetKisiSayisi').text(r.kisiSayisi ? r.kisiSayisi + ' Kişi' : 'Belirtilmedi');
+                    $('#dOzetPaket').text(r.paketAd || 'Standart');
                     $('#dOzetNotlar').text(r.notlar || '-');
-                    
+
+                    $('#dMusteriAnaAd').text(r.anaAd || '-');
                     $('#dIletisimTelefonYazi').text(r.telefon || 'Telefon Yok');
                     $('#dIletisimAraBtn').attr('href', r.telefon ? 'tel:' + r.telefon : '#');
 
-                    // SÖZLEŞME GÖSTERİM KONTROLÜ EKLENDİ
+                    // E-POSTA ALANI GÜNCELLEMESİ
+                    if(r.email && r.email.trim() !== '') {
+                        $('#dIletisimEmailYazi').text(r.email);
+                        $('#dIletisimEmailBtn').attr('href', 'mailto:' + r.email);
+                    } else {
+                        $('#dIletisimEmailYazi').text('E-posta Eklenmedi');
+                        $('#dIletisimEmailBtn').attr('href', '#');
+                    }
+
+                    var gelinDetay = (r.gelinAd || '-') + (r.gelinTC ? ' (TC: ' + r.gelinTC + ')' : '') + (r.gelinTel ? ' - Tel: ' + r.gelinTel : '') + (r.gelinAdres ? '<br><small class="text-muted"><i class="fa-solid fa-house me-1"></i>' + r.gelinAdres + '</small>' : '');
+                    var damatDetay = (r.damatAd || '-') + (r.damatTC ? ' (TC: ' + r.damatTC + ')' : '') + (r.damatTel ? ' - Tel: ' + r.damatTel : '') + (r.damatAdres ? '<br><small class="text-muted"><i class="fa-solid fa-house me-1"></i>' + r.damatAdres + '</small>' : '');
+                    $('#dGelinBilgi').html(gelinDetay);
+                    $('#dDamatBilgi').html(damatDetay);
+
                     if(r.sozlesmeDosya) {
                         $('#btnSozlesmeYukle').hide();
                         $('#btnSozlesmeIndir').attr('href', r.sozlesmeDosya).show();
@@ -415,77 +766,90 @@
                     var html = '';
                     if(r.odemeler && r.odemeler.length > 0) {
                         r.odemeler.forEach(function(o) {
-                            html += `<tr><td class="ps-4 text-muted">${o.tarih}</td><td><span class="badge bg-secondary rounded-pill" style="font-size:0.6rem;">${o.yontem}</span></td><td class="fw-bold text-success">${formatPara(o.tutar)}</td><td class="text-muted small">${o.tur}</td><td class="text-end pe-4"><button class="btn btn-sm btn-light text-muted border py-0 px-2 me-1"><i class="fa-solid fa-print"></i></button></td></tr>`;
+                            html += `<tr><td class="ps-4 text-muted">${o.tarih}</td><td><span class="badge bg-secondary rounded-pill" style="font-size:0.6rem;">${o.yontem}</span></td><td class="fw-bold text-success">${formatPara(o.tutar)}</td><td class="text-muted small">${o.tur}</td></tr>`;
                         });
-                    } else { html = '<tr><td colspan="5" class="text-center text-muted py-4">Ödeme kaydı bulunamadı.</td></tr>'; }
+                    } else { html = '<tr><td colspan="4" class="text-center text-muted py-4">Ödeme kaydı bulunamadı.</td></tr>'; }
                     $('#dOdemeGecmisiTbody').html(html);
                     $('#dTabloToplamTahsilat').text(formatPara(r.alinanKapora));
 
-                    $('#dPersonelSayisi').text(r.personeller ? r.personeller.length : 0);
-                    var perHtml = '';
-                    if(r.personeller && r.personeller.length > 0) {
-                        r.personeller.forEach(function(p) {
-                            var basharf = p.adSoyad ? p.adSoyad.substring(0,2).toUpperCase() : 'PS';
-                            perHtml += `<div class="personel-item position-relative mb-2">
-                                <div class="personel-avatar">${basharf}</div>
-                                <div class="flex-grow-1">
-                                    <small class="text-primary d-block fw-bold" style="font-size:0.6rem; letter-spacing:1px;">${p.gorev ? p.gorev.toUpperCase() : ''}</small>
-                                    <span class="fw-bold text-dark d-block" style="font-size:0.85rem;">${p.adSoyad}</span>
-                                    <span class="text-success fw-bold" style="font-size:0.75rem;"><i class="fa-solid fa-check-circle me-1"></i>${p.ucret ? p.ucret : 0} ₺</span>
-                                </div>
-                                <div>
-                                    <a href="tel:${p.telefon}" class="btn btn-sm btn-light text-muted border rounded-circle" title="Ara"><i class="fa-solid fa-phone"></i></a>
-                                    <button class="btn btn-sm btn-light text-danger border rounded-circle ms-1" onclick="personelCikar(${p.id})" title="Görevden Al"><i class="fa-solid fa-xmark"></i></button>
-                                </div>
-                            </div>`;
-                        });
-                        $('#dPersonelListesi').html(perHtml);
-                    } else { $('#dPersonelListesi').html('<div class="text-muted small text-center py-4">Henüz personel atanmamış.</div>'); }
-
-                    var myModal = new bootstrap.Modal(document.getElementById('detayModal'));
-                    myModal.show();
+                    $('#detayModal').modal('show');
                 }
             });
         }
 
-        // HATA DÜZELTİLDİ: || OPERATÖRÜ EKLENDİ
         function rezervasyonKaydet() {
+            var anaAd = $('input[name="AnaAdSoyad"]').val().trim();
+            var anaTel = $('input[name="AnaTelefon"]').val().trim();
+            var email = $('input[name="Email"]').val().trim();
+            var gelinTC = $('input[name="GelinTC"]').val().trim();
+            var damatTC = $('input[name="DamatTC"]').val().trim();
+            var mekanAdi = $('#yeniMekanInput').val().trim();
+
+            if (!anaAd || !anaTel) {
+                alert("Lütfen Sözleşme Sahibi Ad Soyad ve Telefon alanlarını doldurunuz!");
+                return;
+            }
+            if (anaTel.length < 10) {
+                alert("Müşteri telefon numarası en az 10 haneli olmalıdır!");
+                return;
+            }
+            if (!mekanAdi) {
+                alert("Lütfen Çekim Yeri / Mekan alanını doldurunuz!");
+                return;
+            }
+            if (gelinTC.length > 0 && gelinTC.length !== 11) {
+                alert("Gelin T.C. Kimlik Numarası tam 11 haneli olmalıdır!");
+                return;
+            }
+            if (damatTC.length > 0 && damatTC.length !== 11) {
+                alert("Damat T.C. Kimlik Numarası tam 11 haneli olmalıdır!");
+                return;
+            }
+
             var rezIdStr = $('#formRezervasyonId').val();
-            var data = { 
+            var paketIdStr = $('#yeniPaketSelect').val();
+
+            var data = {
                 RezervasyonId: rezIdStr ? parseInt(rezIdStr) : null,
-                AnaAdSoyad: $('input[name="AnaAdSoyad"]').val(), AnaTelefon: $('input[name="AnaTelefon"]').val(), 
-                GelinAd: $('input[name="GelinAd"]').val(), DamatAd: $('input[name="DamatAd"]').val(), 
-                GelinTel: $('input[name="GelinTel"]').val(), DamatTel: $('input[name="DamatTel"]').val(),
-                Baslangic: $('input[name="Baslangic"]').val(), Bitis: $('input[name="Bitis"]').val(), 
-                IslemTuru: $('select[name="IslemTuru"]').val(), 
-                MekanId: parseInt($('#yeniMekanSelect').val()) || 0, 
-                PaketFiyati: parseFloat($('input[name="PaketFiyati"]').val()) || 0, 
-                Kapora: parseFloat($('input[name="Kapora"]').val()) || 0, 
-                KisiSayisi: parseInt($('input[name="KisiSayisi"]').val()) || null, 
-                Notlar: $('input[name="Notlar"]').val() 
+                AnaAdSoyad: anaAd,
+                AnaTelefon: anaTel,
+                Email: email, // YENİ: E-Posta gönderiliyor
+                GelinAd: $('input[name="GelinAd"]').val(),
+                DamatAd: $('input[name="DamatAd"]').val(),
+                GelinTC: gelinTC,
+                DamatTC: damatTC,
+                GelinTel: $('input[name="GelinTel"]').val(),
+                DamatTel: $('input[name="DamatTel"]').val(),
+                GelinAdres: $('textarea[name="GelinAdres"]').val(),
+                DamatAdres: $('textarea[name="DamatAdres"]').val(),
+                Baslangic: $('input[name="Baslangic"]').val(),
+                Bitis: $('input[name="Bitis"]').val(),
+                MekanAdi: mekanAdi,
+                PaketId: paketIdStr ? parseInt(paketIdStr) : null,
+                PaketFiyati: parseFloat($('input[name="PaketFiyati"]').val()) || 0,
+                Kapora: parseFloat($('input[name="Kapora"]').val()) || 0,
+                Notlar: $('textarea[name="Notlar"]').val()
             };
-            
-            $.ajax({ 
-                url: '/Rezervasyon/Kaydet', type: 'POST', contentType: 'application/json', data: JSON.stringify(data), 
-                success: function (res) { if (res.success) { $('#yeniRezervasyonModal').modal('hide'); $('#formYeniRezervasyon')[0].reset(); takvim.refetchEvents(); } else alert(res.mesaj); } 
+
+            $.ajax({
+                url: '/Rezervasyon/Kaydet', type: 'POST', contentType: 'application/json', data: JSON.stringify(data),
+                success: function (res) {
+                    if (res.success) {
+                        $('#yeniRezervasyonModal').modal('hide');
+                        $('#formYeniRezervasyon')[0].reset();
+                        takvim.refetchEvents();
+                    } else {
+                        alert(res.mesaj);
+                    }
+                }
             });
         }
 
-        function mekanlariYukle() { $.get('/Rezervasyon/GetMekanlar', function (data) { var select = $('#yeniMekanSelect'); var liste = $('#mekanListesi'); select.empty(); liste.empty(); if (data && data.length > 0) { data.forEach(function (m) { select.append('<option value="' + m.id + '">' + m.mekanAdi + '</option>'); liste.append(`<li class="list-group-item d-flex justify-content-between align-items-center"><span class="fw-bold text-dark"><i class="fa-solid fa-caret-right me-2 text-muted"></i>${m.mekanAdi}</span><button class="btn btn-sm btn-outline-danger border-0" onclick="mekanSil(${m.id})"><i class="fa-solid fa-trash"></i></button></li>`); }); } else { select.append('<option value="">Önce Mekan Ekleyin!</option>'); } }); }
-        function mekanEkle() { var mAdi = $('#yeniMekanAdi').val(); if (!mAdi) return; $.ajax({ url: '/Rezervasyon/MekanEkle', type: 'POST', contentType: 'application/json', data: JSON.stringify({ MekanAdi: mAdi }), success: function(res) { if (res.success) { $('#yeniMekanAdi').val(''); mekanlariYukle(); } } }); }
-        function mekanSil(id) { if(confirm("Emin misiniz?")) { $.post('/Rezervasyon/MekanSil', { id: id }, function(res) { if (res.success) mekanlariYukle(); else alert(res.mesaj); }); } }
-        
         function tahsilatKaydet() {
             var rezId = $('#tahsilatRezId').val(); var tutar = $('#tahsilatTutar').val(); if(!tutar || tutar <= 0) return;
             $.post('/Rezervasyon/TahsilatYap', { rezervasyonId: rezId, tutar: tutar, yontem: $('#tahsilatYontem').val(), aciklama: $('#tahsilatAciklama').val() }, function(res) {
                 if(res.success) { $('#odemeAlModal').modal('hide'); $('#tahsilatTutar, #tahsilatAciklama').val(''); rezDetayGetir(rezId); takvim.refetchEvents(); } else alert(res.mesaj);
             });
         }
-
-        function personelEkleAlert() { if(!gecerliRezData) return; $('#ataRezId').val(gecerliRezData.id); personelleriYukle(); $('#personelAtaModal').modal('show'); }
-        function personelleriYukle() { $.get('/Rezervasyon/GetPersoneller', function(data) { var select = $('#personelSelect'); select.empty(); if(data.length > 0) { data.forEach(p => select.append(`<option value="${p.id}">${p.adSoyad} - ${p.gorev} (${p.ucret}₺)</option>`)); } else { select.append(`<option value="">Önce aşağıdan personel oluşturun</option>`); } }); }
-        function yeniPersonelEkle() { var data = { AdSoyad: $('#yeniPerAd').val(), Telefon: $('#yeniPerTel').val(), Gorevi: $('#yeniPerGorev').val(), GunlukUcret: parseFloat($('#yeniPerUcret').val()) || 0 }; if(!data.AdSoyad || !data.Gorevi) { alert("Ad ve Görev zorunlu!"); return; } $.ajax({ url: '/Rezervasyon/PersonelEkle', type: 'POST', contentType: 'application/json', data: JSON.stringify(data), success: function(res) { if(res.success) { $('#yeniPerAd, #yeniPerTel, #yeniPerGorev, #yeniPerUcret').val(''); personelleriYukle(); alert("Personel eklendi!"); } else alert(res.mesaj); }}); }
-        function personelAtaKaydet() { var rId = $('#ataRezId').val(); var pId = $('#personelSelect').val(); if(!pId) return; $.post('/Rezervasyon/PersonelAta', { rezervasyonId: rId, personelId: pId }, function(res) { if(res.success) { $('#personelAtaModal').modal('hide'); rezDetayGetir(rId); } else alert(res.mesaj); }); }
-        function personelCikar(pId) { if(confirm("Personeli bu işten çıkarmak istediğinize emin misiniz?")) { $.post('/Rezervasyon/PersonelCikar', { rezervasyonId: gecerliRezData.id, personelId: pId }, function(res) { if(res.success) rezDetayGetir(gecerliRezData.id); }); } }
     </script>
 }
